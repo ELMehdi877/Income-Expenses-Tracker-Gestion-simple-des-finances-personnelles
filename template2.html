@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion Financière Personnelle</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* S'assurer que la modale est au-dessus de tout */
+        #edit-modal { z-index: 1000; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">💰 Mon Tableau de Bord Financier</h1>
+        </header>
+
+        <section id="dashboard" class="mb-10 p-6 bg-white rounded-lg shadow-xl">
+            <h2 class="text-2xl font-semibold mb-4 text-indigo-600">Vue d'ensemble</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                
+                <div class="p-4 bg-green-100 rounded-lg shadow">
+                    <p class="text-lg text-green-700">Revenus Totaux</p>
+                    <p id="total-income" class="text-3xl font-bold text-green-900">0.00 €</p>
+                </div>
+
+                <div class="p-4 bg-red-100 rounded-lg shadow">
+                    <p class="text-lg text-red-700">Dépenses Totales</p>
+                    <p id="total-expense" class="text-3xl font-bold text-red-900">0.00 €</p>
+                </div>
+
+                <div class="p-4 bg-blue-100 rounded-lg shadow">
+                    <p class="text-lg text-blue-700">Solde Actuel</p>
+                    <p id="current-balance" class="text-3xl font-bold text-blue-900">0.00 €</p>
+                </div>
+            </div>
+
+            <div class="mt-8">
+                <h3 class="text-xl font-medium mb-3">Répartition</h3>
+                <canvas id="myChart" class="p-4 border rounded-lg"></canvas>
+            </div>
+        </section>
+
+        ---
+
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <div class="p-6 bg-white rounded-lg shadow-xl h-fit">
+                <h2 class="text-2xl font-semibold mb-4 text-indigo-600">Ajouter une Opération</h2>
+                <form id="transaction-form" class="space-y-4">
+                    <div>
+                        <label for="type" class="block text-sm font-medium text-gray-700">Type</label>
+                        <select id="type" name="type" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="income">Revenu</option>
+                            <option value="expense">Dépense</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="amount" class="block text-sm font-medium text-gray-700">Montant (€)</label>
+                        <input type="number" step="0.01" id="amount" name="amount" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" min="0.01">
+                    </div>
+
+                    <div>
+                        <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                        <input type="text" id="description" name="description" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+
+                    <div>
+                        <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
+                        <input type="date" id="date" name="date" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    
+                    <button type="submit" class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Ajouter l'Opération
+                    </button>
+                </form>
+            </div>
+
+            <div class="p-6 bg-white rounded-lg shadow-xl overflow-x-auto">
+                <h2 class="text-2xl font-semibold mb-4 text-indigo-600">Liste des Opérations</h2>
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Montant</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactions-list" class="bg-white divide-y divide-gray-200">
+                        </tbody>
+                </table>
+            </div>
+        </section>
+
+        <div id="edit-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+            <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                <h3 class="text-xl font-bold mb-4">Modifier l'Opération</h3>
+                <form id="edit-form" class="space-y-4">
+                    <input type="hidden" id="edit-id">
+
+                    <div>
+                        <label for="edit-type" class="block text-sm font-medium text-gray-700">Type</label>
+                        <select id="edit-type" name="type" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                            <option value="income">Revenu</option>
+                            <option value="expense">Dépense</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="edit-amount" class="block text-sm font-medium text-gray-700">Montant (€)</label>
+                        <input type="number" step="0.01" id="edit-amount" name="amount" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md" min="0.01">
+                    </div>
+
+                    <div>
+                        <label for="edit-description" class="block text-sm font-medium text-gray-700">Description</label>
+                        <input type="text" id="edit-description" name="description" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                    </div>
+
+                    <div>
+                        <label for="edit-date" class="block text-sm font-medium text-gray-700">Date</label>
+                        <input type="date" id="edit-date" name="date" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                    </div>
+
+                    <div class="flex justify-end space-x-4">
+                        <button type="button" onclick="closeEditModal()" class="py-2 px-4 border rounded-md text-gray-700 hover:bg-gray-100">Annuler</button>
+                        <button type="submit" class="py-2 px-4 border border-transparent rounded-md text-white bg-indigo-600 hover:bg-indigo-700">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variable globale pour stocker les transactions, chargées depuis localStorage
+        let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+        let myChart = null; // Pour stocker l'instance de Chart.js
+
+        const form = document.getElementById('transaction-form');
+        const transactionsList = document.getElementById('transactions-list');
+        const totalIncomeEl = document.getElementById('total-income');
+        const totalExpenseEl = document.getElementById('total-expense');
+        const currentBalanceEl = document.getElementById('current-balance');
+        const editModal = document.getElementById('edit-modal');
+        const editForm = document.getElementById('edit-form');
+
+
+        // Fonction pour sauvegarder les données dans le localStorage
+        function saveTransactions() {
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+        }
+
+        // Génère un ID unique simple
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+        }
+
+        // Fonction pour ajouter une transaction
+        function addTransaction(e) {
+            e.preventDefault();
+
+            const type = form.type.value;
+            const amount = parseFloat(form.amount.value);
+            const description = form.description.value.trim();
+            const date = form.date.value;
+
+            // Validation simple
+            if (!amount || amount <= 0 || !description || !date) {
+                alert("Veuillez remplir tous les champs correctement et utiliser un montant positif.");
+                return;
+            }
+
+            const newTransaction = {
+                id: generateId(),
+                type,
+                amount,
+                description,
+                date
+            };
+
+            transactions.push(newTransaction);
+            saveTransactions();
+            renderTransactions();
+            updateDashboard();
+            form.reset();
+        }
+
+        // Fonction pour afficher toutes les transactions
+        function renderTransactions() {
+            transactionsList.innerHTML = ''; // Nettoyer la liste
+            
+            // Trier par date descendante par défaut
+            const sortedTransactions = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            sortedTransactions.forEach(t => {
+                const row = document.createElement('tr');
+                const isIncome = t.type === 'income';
+                const amountText = isIncome ? `+${t.amount.toFixed(2)} €` : `-${t.amount.toFixed(2)} €`;
+                const amountClass = isIncome ? 'text-green-600' : 'text-red-600';
+
+                row.className = 'hover:bg-gray-100';
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium ${isIncome ? 'text-green-500' : 'text-red-500'}">
+                        ${isIncome ? 'Revenu ⬆️' : 'Dépense ⬇️'}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${t.description}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold ${amountClass}">${amountText}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${t.date}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button onclick="openEditModal('${t.id}')" class="text-indigo-600 hover:text-indigo-900 mr-3">Modifier</button>
+                        <button onclick="deleteTransaction('${t.id}')" class="text-red-600 hover:text-red-900">Supprimer</button>
+                    </td>
+                `;
+                transactionsList.appendChild(row);
+            });
+        }
+
+        // Fonction pour mettre à jour le tableau de bord
+        function updateDashboard() {
+            const totalIncome = transactions
+                .filter(t => t.type === 'income')
+                .reduce((sum, t) => sum + t.amount, 0);
+
+            const totalExpense = transactions
+                .filter(t => t.type === 'expense')
+                .reduce((sum, t) => sum + t.amount, 0);
+
+            const currentBalance = totalIncome - totalExpense;
+
+            totalIncomeEl.textContent = `${totalIncome.toFixed(2)} €`;
+            totalExpenseEl.textContent = `${totalExpense.toFixed(2)} €`;
+            
+            // Mise à jour du solde et des couleurs
+            currentBalanceEl.textContent = `${currentBalance.toFixed(2)} €`;
+            currentBalanceEl.parentElement.classList.remove('bg-green-100', 'bg-red-100', 'bg-blue-100');
+            currentBalanceEl.parentElement.classList.add(currentBalance >= 0 ? 'bg-green-100' : 'bg-red-100');
+            currentBalanceEl.classList.remove('text-green-900', 'text-red-900', 'text-blue-900');
+            currentBalanceEl.classList.add(currentBalance >= 0 ? 'text-green-900' : 'text-red-900');
+
+
+            // Mettre à jour le graphique
+            if (typeof Chart !== 'undefined') {
+                renderChart(totalIncome, totalExpense);
+            }
+        }
+
+        // Fonction pour afficher le graphique (Bonus)
+        function renderChart(income, expense) {
+            const ctx = document.getElementById('myChart').getContext('2d');
+            
+            // Détruire l'instance précédente si elle existe
+            if (myChart) {
+                myChart.destroy();
+            }
+
+            myChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Revenus', 'Dépenses'],
+                    datasets: [{
+                        data: [income, expense],
+                        backgroundColor: [
+                            'rgb(54, 162, 235)', // Bleu pour Revenus
+                            'rgb(255, 99, 132)'  // Rouge pour Dépenses
+                        ],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'top' },
+                        title: { display: true, text: 'Répartition Totale Revenus vs Dépenses' }
+                    }
+                }
+            });
+        }
+
+
+        // --- CRUD Modification / Suppression ---
+
+        // Fonction pour supprimer une transaction
+        function deleteTransaction(id) {
+            if (confirm("Êtes-vous sûr de vouloir supprimer cette opération ?")) {
+                transactions = transactions.filter(t => t.id !== id);
+                saveTransactions();
+                renderTransactions();
+                updateDashboard();
+            }
+        }
+
+        // Fonction pour ouvrir la modale d'édition et pré-remplir les champs
+        function openEditModal(id) {
+            const transaction = transactions.find(t => t.id === id);
+            if (!transaction) return;
+
+            document.getElementById('edit-id').value = transaction.id;
+            document.getElementById('edit-type').value = transaction.type;
+            document.getElementById('edit-amount').value = transaction.amount;
+            document.getElementById('edit-description').value = transaction.description;
+            document.getElementById('edit-date').value = transaction.date;
+            
+            editModal.classList.remove('hidden');
+        }
+
+        // Fonction pour fermer la modale d'édition
+        function closeEditModal() {
+            editModal.classList.add('hidden');
+        }
+
+        // Fonction pour enregistrer les modifications
+        function saveEdit(e) {
+            e.preventDefault();
+
+            const id = document.getElementById('edit-id').value;
+            const type = document.getElementById('edit-type').value;
+            const amount = parseFloat(document.getElementById('edit-amount').value);
+            const description = document.getElementById('edit-description').value.trim();
+            const date = document.getElementById('edit-date').value;
+
+            // Validation
+            if (!amount || amount <= 0 || !description || !date) {
+                alert("Veuillez remplir tous les champs correctement.");
+                return;
+            }
+
+            const index = transactions.findIndex(t => t.id === id);
+            if (index !== -1) {
+                transactions[index] = { id, type, amount, description, date };
+                saveTransactions();
+                renderTransactions();
+                updateDashboard();
+                closeEditModal();
+            }
+        }
+
+
+        // Initialisation de l'application
+        document.addEventListener('DOMContentLoaded', () => {
+            // Écouteurs d'événements
+            form.addEventListener('submit', addTransaction);
+            editForm.addEventListener('submit', saveEdit);
+            
+            // Affichage initial
+            renderTransactions();
+            updateDashboard();
+        });
+    </script>
+</body>
+</html>

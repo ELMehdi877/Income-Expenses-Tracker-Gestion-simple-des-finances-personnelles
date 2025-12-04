@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Tracker - Gestion Financière</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        .animate-fadeInUp { animation: fadeInUp 0.6s ease-out; }
+        .animate-slideIn { animation: slideIn 0.5s ease-out; }
+        .animate-pulse-custom { animation: pulse 2s infinite; }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        .btn-hover {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-hover:before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        .btn-hover:hover:before {
+            width: 300px;
+            height: 300px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 50;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+        .modal.active {
+            display: flex;
+            animation: fadeInUp 0.3s ease-out;
+        }
+        .table-row {
+            transition: all 0.2s ease;
+        }
+        .table-row:hover {
+            background-color: rgba(102, 126, 234, 0.1);
+            transform: scale(1.01);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-purple-50 to-blue-50 min-h-screen">
+    
+    <!-- Navigation -->
+    <nav class="gradient-bg text-white shadow-2xl sticky top-0 z-40">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3 animate-slideIn">
+                    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                        <span class="text-2xl">💰</span>
+                    </div>
+                    <h1 class="text-2xl font-bold">Finance Tracker</h1>
+                </div>
+                <div class="flex space-x-4">
+                    <button onclick="showTab('dashboard')" class="px-4 py-2 rounded-lg btn-hover hover:bg-white hover:text-purple-600 font-semibold">Dashboard</button>
+                    <button onclick="showTab('incomes')" class="px-4 py-2 rounded-lg btn-hover hover:bg-white hover:text-purple-600 font-semibold">Revenus</button>
+                    <button onclick="showTab('expenses')" class="px-4 py-2 rounded-lg btn-hover hover:bg-white hover:text-purple-600 font-semibold">Dépenses</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-6 py-8">
+        
+        <!-- Dashboard Tab -->
+        <div id="dashboard-tab" class="tab-content">
+            <div class="animate-fadeInUp">
+                <h2 class="text-4xl font-bold mb-8 text-gray-800">Tableau de Bord</h2>
+                
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-gradient-to-br from-green-400 to-green-600 rounded-2xl p-6 text-white shadow-xl card-hover animate-fadeInUp">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-green-100 text-sm mb-2">Total Revenus</p>
+                                <p class="text-4xl font-bold" id="total-income">0 €</p>
+                            </div>
+                            <div class="text-5xl opacity-50">📈</div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-red-400 to-red-600 rounded-2xl p-6 text-white shadow-xl card-hover animate-fadeInUp" style="animation-delay: 0.1s">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-red-100 text-sm mb-2">Total Dépenses</p>
+                                <p class="text-4xl font-bold" id="total-expense">0 €</p>
+                            </div>
+                            <div class="text-5xl opacity-50">📉</div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl p-6 text-white shadow-xl card-hover animate-fadeInUp animate-pulse-custom" style="animation-delay: 0.2s">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-blue-100 text-sm mb-2">Solde Actuel</p>
+                                <p class="text-4xl font-bold" id="balance">0 €</p>
+                            </div>
+                            <div class="text-5xl opacity-50">💎</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monthly Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white rounded-2xl p-6 shadow-xl card-hover">
+                        <h3 class="text-xl font-bold mb-4 text-gray-800 flex items-center">
+                            <span class="mr-2">📅</span> Ce Mois-ci
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+                                <span class="text-gray-700">Revenus</span>
+                                <span class="font-bold text-green-600" id="month-income">0 €</span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-red-50 rounded-lg">
+                                <span class="text-gray-700">Dépenses</span>
+                                <span class="font-bold text-red-600" id="month-expense">0 €</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-2xl p-6 shadow-xl card-hover">
+                        <h3 class="text-xl font-bold mb-4 text-gray-800 flex items-center">
+                            <span class="mr-2">📊</span> Graphique
+                        </h3>
+                        <canvas id="monthlyChart" height="150"></canvas>
+                    </div>
+                </div>
+
+                <!-- Category Stats -->
+                <div class="bg-white rounded-2xl p-6 shadow-xl card-hover">
+                    <h3 class="text-xl font-bold mb-4 text-gray-800 flex items-center">
+                        <span class="mr-2">🎯</span> Par Catégorie
+                    </h3>
+                    <canvas id="categoryChart" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Incomes Tab -->
+        <div id="incomes-tab" class="tab-content hidden">
+            <div class="animate-fadeInUp">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-4xl font-bold text-gray-800">Revenus</h2>
+                    <button onclick="openModal('income')" class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg btn-hover">
+                        + Ajouter un revenu
+                    </button>
+                </div>
+
+                <!-- Filters -->
+                <div class="bg-white rounded-2xl p-6 shadow-xl mb-6 card-hover">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <select id="income-category-filter" onchange="filterData('income')" class="px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition">
+                            <option value="">Toutes les catégories</option>
+                        </select>
+                        <input type="date" id="income-date-start" onchange="filterData('income')" class="px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition">
+                        <input type="date" id="income-date-end" onchange="filterData('income')" class="px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition">
+                    </div>
+                </div>
+
+                <!-- Incomes Table -->
+                <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                    <table class="w-full">
+                        <thead class="bg-gradient-to-r from-green-500 to-green-600 text-white">
+                            <tr>
+                                <th class="px-6 py-4 text-left cursor-pointer hover:bg-green-700 transition" onclick="sortTable('income', 'description')">Description</th>
+                                <th class="px-6 py-4 text-left cursor-pointer hover:bg-green-700 transition" onclick="sortTable('income', 'amount')">Montant</th>
+                                <th class="px-6 py-4 text-left cursor-pointer hover:bg-green-700 transition" onclick="sortTable('income', 'date')">Date</th>
+                                <th class="px-6 py-4 text-left">Catégorie</th>
+                                <th class="px-6 py-4 text-left">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="incomes-list"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Expenses Tab -->
+        <div id="expenses-tab" class="tab-content hidden">
+            <div class="animate-fadeInUp">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-4xl font-bold text-gray-800">Dépenses</h2>
+                    <button onclick="openModal('expense')" class="bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg btn-hover">
+                        + Ajouter une dépense
+                    </button>
+                </div>
+
+                <!-- Filters -->
+                <div class="bg-white rounded-2xl p-6 shadow-xl mb-6 card-hover">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <select id="expense-category-filter" onchange="filterData('expense')" class="px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition">
+                            <option value="">Toutes les catégories</option>
+                        </select>
+                        <input type="date" id="expense-date-start" onchange="filterData('expense')" class="px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition">
+                        <input type="date" id="expense-date-end" onchange="filterData('expense')" class="px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition">
+                    </div>
+                </div>
+
+                <!-- Expenses Table -->
+                <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                    <table class="w-full">
+                        <thead class="bg-gradient-to-r from-red-500 to-red-600 text-white">
+                            <tr>
+                                <th class="px-6 py-4 text-left cursor-pointer hover:bg-red-700 transition" onclick="sortTable('expense', 'description')">Description</th>
+                                <th class="px-6 py-4 text-left cursor-pointer hover:bg-red-700 transition" onclick="sortTable('expense', 'amount')">Montant</th>
+                                <th class="px-6 py-4 text-left cursor-pointer hover:bg-red-700 transition" onclick="sortTable('expense', 'date')">Date</th>
+                                <th class="px-6 py-4 text-left">Catégorie</th>
+                                <th class="px-6 py-4 text-left">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expenses-list"></tbody>
+                    </table>
+                </div>
+
+                <!-- Export Buttons -->
+                <div class="mt-6 flex space-x-4">
+                    <button onclick="exportData('csv')" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg btn-hover">
+                        📄 Export CSV
+                    </button>
+                    <button onclick="exportData('pdf')" class="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg btn-hover">
+                        📑 Export PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal items-center justify-center">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 transform transition-all">
+            <h3 id="modal-title" class="text-2xl font-bold mb-6 text-gray-800"></h3>
+            <form id="transaction-form" class="space-y-4">
+                <input type="hidden" id="transaction-id">
+                <input type="hidden" id="transaction-type">
+                
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">Description</label>
+                    <input type="text" id="description" required class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition">
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">Montant (€)</label>
+                    <input type="number" id="amount" step="0.01" required class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition">
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">Date</label>
+                    <input type="date" id="date" required class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition">
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">Catégorie</label>
+                    <select id="category" required class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition">
+                    </select>
+                </div>
+                
+                <div class="flex space-x-4 mt-6">
+                    <button type="submit" class="flex-1 bg-gradient-to-r from-purple-500 to-purple-600 text-white py-3 rounded-xl font-semibold shadow-lg btn-hover">
+                        Enregistrer
+                    </button>
+                    <button type="button" onclick="closeModal()" class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-300 transition">
+                        Annuler
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const categories = {
+            income: ['Salaire', 'Freelance', 'Investissement', 'Autre'],
+            expense: ['Alimentation', 'Transport', 'Logement', 'Loisirs', 'Santé', 'Autre']
+        };
+
+        let incomes = [];
+        let expenses = [];
+        let sortOrder = { income: {}, expense: {} };
+
+        function loadData() {
+            const saved = localStorage.getItem('financeData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                incomes = data.incomes || [];
+                expenses = data.expenses || [];
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem('financeData', JSON.stringify({ incomes, expenses }));
+            updateDashboard();
+        }
+
+        function showTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`${tab}-tab`).classList.remove('hidden');
+            
+            if (tab === 'incomes') renderIncomes();
+            if (tab === 'expenses') renderExpenses();
+            if (tab === 'dashboard') updateDashboard();
+        }
+
+        function openModal(type, item = null) {
+            document.getElementById('modal').classList.add('active');
+            document.getElementById('transaction-type').value = type;
+            document.getElementById('modal-title').textContent = item ? `Modifier ${type === 'income' ? 'Revenu' : 'Dépense'}` : `Ajouter ${type === 'income' ? 'Revenu' : 'Dépense'}`;
+            
+            const categorySelect = document.getElementById('category');
+            categorySelect.innerHTML = categories[type].map(cat => `<option value="${cat}">${cat}</option>`).join('');
+            
+            if (item) {
+                document.getElementById('transaction-id').value = item.id;
+                document.getElementById('description').value = item.description;
+                document.getElementById('amount').value = item.amount;
+                document.getElementById('date').value = item.date;
+                document.getElementById('category').value = item.category;
+            } else {
+                document.getElementById('transaction-form').reset();
+                document.getElementById('date').value = new Date().toISOString().split('T')[0];
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            document.getElementById('transaction-form').reset();
+        }
+
+        document.getElementById('transaction-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const type = document.getElementById('transaction-type').value;
+            const id = document.getElementById('transaction-id').value;
+            const item = {
+                id: id || Date.now().toString(),
+                description: document.getElementById('description').value,
+                amount: parseFloat(document.getElementById('amount').value),
+                date: document.getElementById('date').value,
+                category: document.getElementById('category').value
+            };
+
+            if (type === 'income') {
+                if (id) {
+                    const index = incomes.findIndex(i => i.id === id);
+                    incomes[index] = item;
+                } else {
+                    incomes.push(item);
+                }
+                renderIncomes();
+            } else {
+                if (id) {
+                    const index = expenses.findIndex(i => i.id === id);
+                    expenses[index] = item;
+                } else {
+                    expenses.push(item);
+                }
+                renderExpenses();
+            }
+
+            saveData();
+            closeModal();
+        });
+
+        function deleteItem(type, id) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')) {
+                if (type === 'income') {
+                    incomes = incomes.filter(i => i.id !== id);
+                    renderIncomes();
+                } else {
+                    expenses = expenses.filter(i => i.id !== id);
+                    renderExpenses();
+                }
+                saveData();
+            }
+        }
+
+        function renderIncomes() {
+            const list = document.getElementById('incomes-list');
+            const filtered = filterItems(incomes, 'income');
+            
+            list.innerHTML = filtered.map(item => `
+                <tr class="table-row border-b border-gray-100">
+                    <td class="px-6 py-4">${item.description}</td>
+                    <td class="px-6 py-4 font-bold text-green-600">${item.amount.toFixed(2)} €</td>
+                    <td class="px-6 py-4">${new Date(item.date).toLocaleDateString('fr-FR')}</td>
+                    <td class="px-6 py-4"><span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">${item.category}</span></td>
+                    <td class="px-6 py-4">
+                        <button onclick="openModal('income', ${JSON.stringify(item).replace(/"/g, '&quot;')})" class="text-blue-600 hover:text-blue-800 mr-3 font-semibold">✏️</button>
+                        <button onclick="deleteItem('income', '${item.id}')" class="text-red-600 hover:text-red-800 font-semibold">🗑️</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            populateCategoryFilters();
+        }
+
+        function renderExpenses() {
+            const list = document.getElementById('expenses-list');
+            const filtered = filterItems(expenses, 'expense');
+            
+            list.innerHTML = filtered.map(item => `
+                <tr class="table-row border-b border-gray-100">
+                    <td class="px-6 py-4">${item.description}</td>
+                    <td class="px-6 py-4 font-bold text-red-600">${item.amount.toFixed(2)} €</td>
+                    <td class="px-6 py-4">${new Date(item.date).toLocaleDateString('fr-FR')}</td>
+                    <td class="px-6 py-4"><span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm">${item.category}</span></td>
+                    <td class="px-6 py-4">
+                        <button onclick="openModal('expense', ${JSON.stringify(item).replace(/"/g, '&quot;')})" class="text-blue-600 hover:text-blue-800 mr-3 font-semibold">✏️</button>
+                        <button onclick="deleteItem('expense', '${item.id}')" class="text-red-600 hover:text-red-800 font-semibold">🗑️</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            populateCategoryFilters();
+        }
+
+        function populateCategoryFilters() {
+            const incomeFilter = document.getElementById('income-category-filter');
+            const expenseFilter = document.getElementById('expense-category-filter');
+            
+            incomeFilter.innerHTML = '<option value="">Toutes les catégories</option>' + 
+                categories.income.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+            
+            expenseFilter.innerHTML = '<option value="">Toutes les catégories</option>' + 
+                categories.expense.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+        }
+
+        function filterItems(items, type) {
+            const categoryFilter = document.getElementById(`${type}-category-filter`).value;
+            const dateStart = document.getElementById(`${type}-date-start`).value;
+            const dateEnd = document.getElementById(`${type}-date-end`).value;
+
+            return items.filter(item => {
+                if (categoryFilter && item.category !== categoryFilter) return false;
+                if (dateStart && item.date < dateStart) return false;
+                if (dateEnd && item.date > dateEnd) return false;
+                return true;
+            });
+        }
+
+        function filterData(type) {
+            if (type === 'income') renderIncomes();
+            else renderExpenses();
+        }
+
+        function sortTable(type, field) {
+            const data = type === 'income' ? incomes : expenses;
+            const order = sortOrder[type][field] || 'asc';
+            
+            data.sort((a, b) => {
+                let valA = a[field];
+                let valB = b[field];
+                
+                if (field === 'amount') {
+                    valA = parseFloat(valA);
+                    valB = parseFloat(valB);
+                }
+                
+                if (order === 'asc') {
+                    return valA > valB ? 1 : -1;
+                } else {
+                    return valA < valB ? 1 : -1;
+                }
+            });
+            
+            sortOrder[type][field] = order === 'asc' ? 'desc' : 'asc';
+            
+            if (type === 'income') renderIncomes();
+            else renderExpenses();
+        }
+
+        function updateDashboard() {
+            const totalIncome = incomes.reduce((sum, i) => sum + i.amount, 0);
+            const totalExpense = expenses.reduce((sum, e) => sum + e.amount, 0);
+            const balance = totalIncome - totalExpense;
+
+            document.getElementById('total-income').textContent = totalIncome.toFixed(2) + ' €';
+            document.getElementById('total-expense').textContent = totalExpense.toFixed(2) + ' €';
+            document.getElementById('balance').textContent = balance.toFixed(2) + ' €';
+
+            const currentMonth = new Date().getMonth();
+            const currentYear = new Date().getFullYear();
+            
+            const monthIncome = incomes.filter(i => {
+                const d = new Date(i.date);
+                return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+            }).reduce((sum, i) => sum + i.amount, 0);
+            
+            const monthExpense = expenses.filter(e => {
+                const d = new Date(e.date);
+                return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+            }).reduce((sum, e) => sum + e.amount, 0);
+
+            document.getElementById('month-income').textContent = monthIncome.toFixed(2) + ' €';
+            document.getElementById('month-expense').textContent = monthExpense.toFixed(2) + ' €';
+
+            updateCharts();
+        }
+
+        function updateCharts() {
+            const ctx1 = document.getElementById('monthlyChart');
+            if (window.monthlyChart) window.monthlyChart.destroy();
+            
+            window.monthlyChart = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['Revenus', 'Dépenses'],
+                    datasets: [{
+                        data: [
+                            incomes.reduce((sum, i) => sum + i.amount, 0),
+                            expenses.reduce((sum, e) => sum + e.amount, 0)
+                        ],
+                        backgroundColor: ['#10b981', '#ef4444']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            const ctx2 = document.getElementById('categoryChart');
+            if (window.categoryChart) window.categoryChart.destroy();
+            
+            const categoryData = {};
+            expenses.forEach(e => {
+                categoryData[e.category] = (categoryData[e.category] || 0) + e.amount;
+            });
+
+            window.categoryChart = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(categoryData),
+                    datasets: [{
+                        data: Object.values(categoryData),
+                        backgroundColor: ['#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+
+        function exportData(format) {
+            if (format === 'csv') {
+                let csv = 'Type,Description,Montant,Date,Categorie\n';
+                incomes.forEach(i => csv += `Revenu,${i.description},${i.amount},${i.date},${i.category}\n`);
+                expenses.forEach(e => csv += `Depense,${e.description},${e.amount},${e.date},${e.category}\n`);
+                
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'finance_export.csv';
+                a.click();
+            } else if (format === 'pdf') {
+                alert('Export PDF: Pour une application complète, intégrez une bibliothèque comme jsPDF. Cette démo montre le concept.');
+            }
+        }
+
+        loadData();
+        updateDashboard();
+        showTab('dashboard');
+    </script>
+</body>
+</html>

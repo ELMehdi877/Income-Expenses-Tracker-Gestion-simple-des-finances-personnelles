@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Manager - Tableau de Bord</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .animate-fade-in { animation: fadeIn 0.5s ease-out; }
+        .animate-slide-in { animation: slideIn 0.5s ease-out; }
+        .animate-scale-in { animation: scaleIn 0.4s ease-out; }
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .modal-backdrop {
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.2s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-md animate-fade-in">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h1 class="text-2xl font-bold text-slate-800">Finance Manager</h1>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="showModal('income')" class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md">
+                        + Revenu
+                    </button>
+                    <button onclick="showModal('expense')" class="bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md">
+                        + Dépense
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <!-- Total Revenus -->
+            <div class="bg-white rounded-xl shadow-lg p-6 card-hover animate-slide-in">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-slate-600 font-medium mb-1">Total Revenus</p>
+                        <p id="totalIncome" class="text-3xl font-bold text-green-600">0 MAD</p>
+                    </div>
+                    <div class="w-14 h-14 bg-gradient-to-br from-green-100 to-emerald-200 rounded-full flex items-center justify-center">
+                        <svg class="w-7 h-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Dépenses -->
+            <div class="bg-white rounded-xl shadow-lg p-6 card-hover animate-slide-in" style="animation-delay: 0.1s;">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-slate-600 font-medium mb-1">Total Dépenses</p>
+                        <p id="totalExpense" class="text-3xl font-bold text-red-600">0 MAD</p>
+                    </div>
+                    <div class="w-14 h-14 bg-gradient-to-br from-red-100 to-rose-200 rounded-full flex items-center justify-center">
+                        <svg class="w-7 h-7 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Solde Actuel -->
+            <div class="bg-white rounded-xl shadow-lg p-6 card-hover animate-slide-in" style="animation-delay: 0.2s;">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-slate-600 font-medium mb-1">Solde Actuel</p>
+                        <p id="balance" class="text-3xl font-bold text-blue-600">0 MAD</p>
+                    </div>
+                    <div class="w-14 h-14 bg-gradient-to-br from-blue-100 to-indigo-200 rounded-full flex items-center justify-center">
+                        <svg class="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tables Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Revenus Table -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden animate-fade-in">
+                <div class="bg-gradient-to-r from-green-500 to-emerald-600 px-6 py-4">
+                    <h2 class="text-xl font-bold text-white">Revenus</h2>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Description</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Montant</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="incomeList" class="divide-y divide-slate-200">
+                            <tr>
+                                <td colspan="4" class="px-6 py-8 text-center text-slate-500">Aucun revenu enregistré</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Dépenses Table -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden animate-fade-in">
+                <div class="bg-gradient-to-r from-red-500 to-rose-600 px-6 py-4">
+                    <h2 class="text-xl font-bold text-white">Dépenses</h2>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Description</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Montant</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expenseList" class="divide-y divide-slate-200">
+                            <tr>
+                                <td colspan="4" class="px-6 py-8 text-center text-slate-500">Aucune dépense enregistrée</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div id="modal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
+            <div class="fixed inset-0 bg-slate-900 bg-opacity-50 modal-backdrop transition-opacity" onclick="closeModal()"></div>
+            
+            <div class="inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full animate-scale-in">
+                <form id="transactionForm" onsubmit="handleSubmit(event)">
+                    <div class="bg-white px-6 pt-5 pb-4">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 id="modalTitle" class="text-2xl font-bold text-slate-800"></h3>
+                            <button type="button" onclick="closeModal()" class="text-slate-400 hover:text-slate-600 transition-colors">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Description</label>
+                                <input type="text" id="description" required class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Montant (MAD)</label>
+                                <input type="number" id="amount" step="0.01" required class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Date</label>
+                                <input type="date" id="date" required class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-50 px-6 py-4 flex gap-3 justify-end">
+                        <button type="button" onclick="closeModal()" class="px-6 py-2.5 border border-slate-300 rounded-lg text-slate-700 font-medium hover:bg-slate-100 transition-all">
+                            Annuler
+                        </button>
+                        <button type="submit" id="submitBtn" class="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg font-medium hover:from-blue-600 hover:to-indigo-700 transition-all transform hover:scale-105">
+                            Enregistrer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const data = {
+            incomes: [],
+            expenses: [],
+            currentType: '',
+            editId: null
+        };
+
+        function showModal(type) {
+            data.currentType = type;
+            data.editId = null;
+            document.getElementById('modal').classList.remove('hidden');
+            document.getElementById('modalTitle').textContent = type === 'income' ? 'Ajouter un Revenu' : 'Ajouter une Dépense';
+            document.getElementById('transactionForm').reset();
+            document.getElementById('date').valueAsDate = new Date();
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+        }
+
+        function handleSubmit(e) {
+            e.preventDefault();
+            const description = document.getElementById('description').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+            const date = document.getElementById('date').value;
+
+            const transaction = {
+                id: data.editId || Date.now(),
+                description,
+                amount,
+                date
+            };
+
+            if (data.editId) {
+                const list = data.currentType === 'income' ? data.incomes : data.expenses;
+                const index = list.findIndex(t => t.id === data.editId);
+                list[index] = transaction;
+            } else {
+                if (data.currentType === 'income') {
+                    data.incomes.push(transaction);
+                } else {
+                    data.expenses.push(transaction);
+                }
+            }
+
+            render();
+            closeModal();
+        }
+
+        function editTransaction(type, id) {
+            data.currentType = type;
+            data.editId = id;
+            const list = type === 'income' ? data.incomes : data.expenses;
+            const transaction = list.find(t => t.id === id);
+            
+            document.getElementById('description').value = transaction.description;
+            document.getElementById('amount').value = transaction.amount;
+            document.getElementById('date').value = transaction.date;
+            document.getElementById('modalTitle').textContent = type === 'income' ? 'Modifier le Revenu' : 'Modifier la Dépense';
+            document.getElementById('modal').classList.remove('hidden');
+        }
+
+        function deleteTransaction(type, id) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer cette transaction ?')) {
+                if (type === 'income') {
+                    data.incomes = data.incomes.filter(t => t.id !== id);
+                } else {
+                    data.expenses = data.expenses.filter(t => t.id !== id);
+                }
+                render();
+            }
+        }
+
+        function render() {
+            const totalIncome = data.incomes.reduce((sum, t) => sum + t.amount, 0);
+            const totalExpense = data.expenses.reduce((sum, t) => sum + t.amount, 0);
+            const balance = totalIncome - totalExpense;
+
+            document.getElementById('totalIncome').textContent = totalIncome.toFixed(2) + ' MAD';
+            document.getElementById('totalExpense').textContent = totalExpense.toFixed(2) + ' MAD';
+            document.getElementById('balance').textContent = balance.toFixed(2) + ' MAD';
+            document.getElementById('balance').className = 'text-3xl font-bold ' + (balance >= 0 ? 'text-blue-600' : 'text-red-600');
+
+            renderList('income', data.incomes);
+            renderList('expense', data.expenses);
+        }
+
+        function renderList(type, list) {
+            const tbody = document.getElementById(type === 'income' ? 'incomeList' : 'expenseList');
+            
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-slate-500">Aucun${type === 'income' ? ' revenu' : 'e dépense'} enregistré${type === 'expense' ? 'e' : ''}</td></tr>`;
+                return;
+            }
+
+            const sortedList = [...list].sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            tbody.innerHTML = sortedList.map(t => `
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="px-6 py-4 text-sm text-slate-800">${t.description}</td>
+                    <td class="px-6 py-4 text-sm font-semibold ${type === 'income' ? 'text-green-600' : 'text-red-600'}">${t.amount.toFixed(2)} MAD</td>
+                    <td class="px-6 py-4 text-sm text-slate-600">${new Date(t.date).toLocaleDateString('fr-FR')}</td>
+                    <td class="px-6 py-4 text-sm">
+                        <button onclick="editTransaction('${type}', ${t.id})" class="text-blue-600 hover:text-blue-800 mr-3 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                        </button>
+                        <button onclick="deleteTransaction('${type}', ${t.id})" class="text-red-600 hover:text-red-800 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        render();
+    </script>
+</body>
+</html>

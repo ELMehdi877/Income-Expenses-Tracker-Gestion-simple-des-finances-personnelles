@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tableau de bord financier</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+  <!-- Header -->
+  <header class="bg-indigo-600 text-white p-4 shadow-md">
+    <h1 class="text-2xl font-bold">Tableau de bord financier</h1>
+  </header>
+
+  <main class="p-6">
+
+    <!-- Dashboard Summary -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div class="bg-white p-4 rounded-lg shadow text-center">
+        <h2 class="text-gray-500">Total Revenus</h2>
+        <p id="total-incomes" class="text-xl font-bold text-green-600">0 DH</p>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow text-center">
+        <h2 class="text-gray-500">Total Dépenses</h2>
+        <p id="total-expenses" class="text-xl font-bold text-red-600">0 DH</p>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow text-center">
+        <h2 class="text-gray-500">Solde Actuel</h2>
+        <p id="balance" class="text-xl font-bold text-blue-600">0 DH</p>
+      </div>
+    </section>
+
+    <!-- Incomes Section -->
+    <section class="mb-6">
+      <h2 class="text-lg font-bold mb-2">Revenus</h2>
+      <form id="income-form" class="flex gap-2 mb-4">
+        <input type="text" id="income-desc" placeholder="Description" class="flex-1 p-2 border rounded">
+        <input type="number" id="income-amount" placeholder="Montant" class="p-2 border rounded">
+        <input type="date" id="income-date" class="p-2 border rounded">
+        <button type="submit" class="bg-green-500 text-white px-4 rounded hover:bg-green-600">Ajouter</button>
+      </form>
+      <table class="w-full bg-white rounded shadow overflow-hidden">
+        <thead class="bg-gray-200">
+          <tr>
+            <th class="p-2 text-left">Description</th>
+            <th class="p-2 text-left">Montant</th>
+            <th class="p-2 text-left">Date</th>
+            <th class="p-2 text-left">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="income-table">
+          <!-- Revenus seront ajoutés ici -->
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Expenses Section -->
+    <section class="mb-6">
+      <h2 class="text-lg font-bold mb-2">Dépenses</h2>
+      <form id="expense-form" class="flex gap-2 mb-4">
+        <input type="text" id="expense-desc" placeholder="Description" class="flex-1 p-2 border rounded">
+        <input type="number" id="expense-amount" placeholder="Montant" class="p-2 border rounded">
+        <input type="date" id="expense-date" class="p-2 border rounded">
+        <button type="submit" class="bg-red-500 text-white px-4 rounded hover:bg-red-600">Ajouter</button>
+      </form>
+      <table class="w-full bg-white rounded shadow overflow-hidden">
+        <thead class="bg-gray-200">
+          <tr>
+            <th class="p-2 text-left">Description</th>
+            <th class="p-2 text-left">Montant</th>
+            <th class="p-2 text-left">Date</th>
+            <th class="p-2 text-left">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="expense-table">
+          <!-- Dépenses seront ajoutées ici -->
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Chart Section -->
+    <section class="bg-white p-4 rounded shadow">
+      <h2 class="text-lg font-bold mb-2">Graphique mensuel</h2>
+      <canvas id="finance-chart"></canvas>
+    </section>
+
+  </main>
+
+  <script>
+    // Données simulées
+    let incomes = [];
+    let expenses = [];
+
+    const incomeForm = document.getElementById('income-form');
+    const expenseForm = document.getElementById('expense-form');
+
+    const incomeTable = document.getElementById('income-table');
+    const expenseTable = document.getElementById('expense-table');
+
+    function updateDashboard() {
+      const totalIncome = incomes.reduce((sum, i) => sum + i.amount, 0);
+      const totalExpense = expenses.reduce((sum, e) => sum + e.amount, 0);
+      document.getElementById('total-incomes').innerText = totalIncome + " DH";
+      document.getElementById('total-expenses').innerText = totalExpense + " DH";
+      document.getElementById('balance').innerText = (totalIncome - totalExpense) + " DH";
+
+      renderTable();
+      renderChart();
+    }
+
+    function renderTable() {
+      incomeTable.innerHTML = '';
+      incomes.forEach((income, index) => {
+        const row = `<tr>
+          <td class="p-2">${income.desc}</td>
+          <td class="p-2 text-green-600">${income.amount}</td>
+          <td class="p-2">${income.date}</td>
+          <td class="p-2">
+            <button onclick="deleteIncome(${index})" class="text-red-500 hover:underline">Supprimer</button>
+          </td>
+        </tr>`;
+        incomeTable.innerHTML += row;
+      });
+
+      expenseTable.innerHTML = '';
+      expenses.forEach((expense, index) => {
+        const row = `<tr>
+          <td class="p-2">${expense.desc}</td>
+          <td class="p-2 text-red-600">${expense.amount}</td>
+          <td class="p-2">${expense.date}</td>
+          <td class="p-2">
+            <button onclick="deleteExpense(${index})" class="text-red-500 hover:underline">Supprimer</button>
+          </td>
+        </tr>`;
+        expenseTable.innerHTML += row;
+      });
+    }
+
+    function deleteIncome(index) {
+      incomes.splice(index, 1);
+      updateDashboard();
+    }
+
+    function deleteExpense(index) {
+      expenses.splice(index, 1);
+      updateDashboard();
+    }
+
+    incomeForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const desc = document.getElementById('income-desc').value;
+      const amount = parseFloat(document.getElementById('income-amount').value);
+      const date = document.getElementById('income-date').value;
+      if(desc && amount && date){
+        incomes.push({desc, amount, date});
+        incomeForm.reset();
+        updateDashboard();
+      }
+    });
+
+    expenseForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const desc = document.getElementById('expense-desc').value;
+      const amount = parseFloat(document.getElementById('expense-amount').value);
+      const date = document.getElementById('expense-date').value;
+      if(desc && amount && date){
+        expenses.push({desc, amount, date});
+        expenseForm.reset();
+        updateDashboard();
+      }
+    });
+
+    // Chart.js
+    let chart;
+    function renderChart() {
+      const ctx = document.getElementById('finance-chart').getContext('2d');
+      const labels = Array.from({length: 12}, (_, i) => `Mois ${i+1}`);
+      const incomeData = Array(12).fill(0);
+      const expenseData = Array(12).fill(0);
+
+      incomes.forEach(i => {
+        const month = new Date(i.date).getMonth();
+        incomeData[month] += i.amount;
+      });
+      expenses.forEach(e => {
+        const month = new Date(e.date).getMonth();
+        expenseData[month] += e.amount;
+      });
+
+      if(chart) chart.destroy();
+      chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [
+            { label: 'Revenus', data: incomeData, backgroundColor: 'rgba(34,197,94,0.7)' },
+            { label: 'Dépenses', data: expenseData, backgroundColor: 'rgba(239,68,68,0.7)' }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'top' },
+          },
+        }
+      });
+    }
+
+    // Initial update
+    updateDashboard();
+  </script>
+
+</body>
+</html>
