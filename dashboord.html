@@ -151,8 +151,8 @@
             </div>
         </nav>
     </header>
-    <main class="flex flex-col">
-        <section class="flex flex-col lg:flex-row">
+    <main class="flex flex-col gap-4">
+        <section class="flex flex-col gap-2 lg:flex-row">
             <div class="lg:w-[50%] flex items-center justify-center order-2 lg:order-1 w-[100%] bg-red-500">
                 statistiques
             </div>
@@ -212,89 +212,247 @@
                 </div>
             </div>
         </section>
-        <section>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Revenus -->
-                <div class="bg-white rounded-3xl shadow-xl p-8 animate-fade-in" style="animation-delay: 0.4s;">
-                    <div class="flex justify-between items-center mb-6 pb-4 border-b-2 border-gray-100">
-                        <div class="flex items-center gap-3">
-                            <span class="text-2xl">💵</span>
-                            <h2 class="text-2xl font-bold text-gray-800">Revenus</h2>
-                        </div>
-                        <button onclick="openModal('incomeModal')"
-                            class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-5 py-3 rounded-xl font-semibold text-sm uppercase tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                            + Ajouter
-                        </button>
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Revenus -->
+            <div class="bg-white rounded-3xl shadow-xl p-8 animate-fade-in" style="animation-delay: 0.4s;">
+                <div class="flex justify-between items-center mb-6 pb-4 border-b-2 border-gray-100">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">💵</span>
+                        <h2 class="text-2xl font-bold text-gray-800">Revenus</h2>
                     </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead>
-                                <tr class="bg-gradient-to-r from-indigo-600 to-indigo-700 text-white">
-                                    <th
-                                        class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider rounded-tl-xl">
-                                        Description</th>
-                                    <th class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider">
-                                        Montant</th>
-                                    <th class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider">Date
-                                    </th>
-                                    <th
-                                        class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider rounded-tr-xl">
-                                        Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="incomesBody" class="divide-y divide-gray-200">
-                                <tr>
-                                    <td colspan="4" class="px-4 py-16 text-center">
-                                        <div class="text-6xl mb-4 opacity-50">💰</div>
-                                        <p class="text-gray-400">Aucun revenu enregistré</p>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    <button onclick="openModal('incomeModal')"
+                        class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-5 py-3 rounded-xl font-semibold text-sm uppercase tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                        + Ajouter
+                    </button>
                 </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="bg-gradient-to-r from-indigo-600 to-indigo-700 text-white">
+                                <th
+                                    class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider rounded-tl-xl">
+                                    Description</th>
+                                <th class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider">
+                                    Montant</th>
+                                <th class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider">Date
+                                </th>
+                                <th
+                                    class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider rounded-tr-xl">
+                                    Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="incomesBody" class="divide-y divide-gray-200">
+                            <tr>
+                                <td colspan="4" class="px-4 py-16 text-center">
+                                    <div class="text-6xl mb-4 opacity-50">💰</div>
+                                    <p class="text-gray-400">Aucun revenu enregistré</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-                <!-- Dépenses -->
-                <div class="bg-white rounded-3xl shadow-xl p-8 animate-fade-in" style="animation-delay: 0.5s;">
-                    <div class="flex justify-between items-center mb-6 pb-4 border-b-2 border-gray-100">
+            <!-- Dépenses -->
+            <div class="bg-white rounded-3xl shadow-xl p-8 animate-fade-in" style="animation-delay: 0.5s;">
+                <div class="flex justify-between items-center mb-6 pb-4 border-b-2 border-gray-100">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">💳</span>
+                        <h2 class="text-2xl font-bold text-gray-800">Dépenses</h2>
+                    </div>
+                    <button onclick="openModal('expenseModal')"
+                        class="bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white px-5 py-3 rounded-xl font-semibold text-sm uppercase tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                        + Ajouter
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="bg-gradient-to-r from-indigo-600 to-indigo-700 text-white">
+                                <th
+                                    class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider rounded-tl-xl">
+                                    Description</th>
+                                <th class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider">
+                                    Montant</th>
+                                <th class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider">Date
+                                </th>
+                                <th
+                                    class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider rounded-tr-xl">
+                                    Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expensesBody" class="divide-y divide-gray-200">
+                            <tr>
+                                <td colspan="4" class="px-4 py-16 text-center">
+                                    <div class="text-6xl mb-4 opacity-50">🛒</div>
+                                    <p class="text-gray-400">Aucune dépense enregistrée</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Modal Revenu -->
+            <div id="incomeModal"
+                class=" flex items-center justify-center px-4 fixed inset-0 z-50 bg-black/50 backdrop-blur-sm overflow-y-auto">
+                <div class="relative bg-white rounded-3xl shadow-2xl max-w-lg w-full p-10 animate-slide-up">
+                    <div class="flex justify-between items-center mb-8">
                         <div class="flex items-center gap-3">
-                            <span class="text-2xl">💳</span>
-                            <h2 class="text-2xl font-bold text-gray-800">Dépenses</h2>
+                            <span class="text-3xl">💵</span>
+                            <h3 class="text-2xl font-bold text-gray-800">Ajouter un Revenu</h3>
                         </div>
-                        <button onclick="openModal('expenseModal')"
-                            class="bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white px-5 py-3 rounded-xl font-semibold text-sm uppercase tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                            + Ajouter
+                        <button onclick="closeModal('incomeModal')"
+                            class="text-gray-400 hover:text-red-600 text-3xl transition-colors">
+                            &times;
                         </button>
                     </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead>
-                                <tr class="bg-gradient-to-r from-indigo-600 to-indigo-700 text-white">
-                                    <th
-                                        class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider rounded-tl-xl">
-                                        Description</th>
-                                    <th class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider">
-                                        Montant</th>
-                                    <th class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider">Date
-                                    </th>
-                                    <th
-                                        class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider rounded-tr-xl">
-                                        Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="expensesBody" class="divide-y divide-gray-200">
-                                <tr>
-                                    <td colspan="4" class="px-4 py-16 text-center">
-                                        <div class="text-6xl mb-4 opacity-50">🛒</div>
-                                        <p class="text-gray-400">Aucune dépense enregistrée</p>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <form onsubmit="addIncome(event)" class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+                            <input type="text" id="incomeDesc" placeholder="Ex: Salaire" required
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Categorie</label>
+                            <select name="categoie" required
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                                <option value="Salaire">Salaire</option>
+                                <option value="Prime">Prime</option>
+                                <option value="Bonus">Bonus</option>
+                                <option value="Prime">Prime</option>
+                                <option value="Revenus freelancing">Revenus freelancing</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Montant (DH)</label>
+                            <input type="number" id="incomeAmount" step="0.01" placeholder="0.00" required
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                        </div>
+                        <button type="submit"
+                            class="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white py-4 rounded-xl font-bold text-sm uppercase tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                            Enregistrer
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Modal Dépense -->
+            <div id="expenseModal"
+                class="hidden flex items-center justify-center px-4 fixed inset-0 z-50 bg-black/50 backdrop-blur-sm overflow-y-auto">
+                <div class="relative bg-white rounded-3xl shadow-2xl max-w-lg w-full p-10 animate-slide-up">
+                    <div class="flex justify-between items-center mb-8">
+                        <div class="flex items-center gap-3">
+                            <span class="text-3xl">💳</span>
+                            <h3 class="text-2xl font-bold text-gray-800">Ajouter une Dépense</h3>
+                        </div>
+                        <button onclick="closeModal('expenseModal')"
+                            class="text-gray-400 hover:text-red-600 text-3xl transition-colors">
+                            &times;
+                        </button>
                     </div>
+                    <form onsubmit="addExpense(event)" class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+                            <input type="text" id="expenseDesc" placeholder="Ex: Courses" required
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Categorie</label>
+                            <select name="categoie" required
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                                
+                                <option value="" disabled selected>Choisir une catégorie</option>
+
+                                <optgroup label="🏠 Logement & Charges">
+                                    <option value="rent">Loyer</option>
+                                    <option value="mortgage">Crédit immobilier</option>
+                                    <option value="electricity">Électricité</option>
+                                    <option value="water">Eau</option>
+                                    <option value="gas">Gaz</option>
+                                    <option value="internet">Internet</option>
+                                    <option value="heating">Chauffage</option>
+                                    <option value="home_charges">Charges de copropriété</option>
+                                </optgroup>
+
+                                <optgroup label="🚗 Transport">
+                                    <option value="fuel">Carburant</option>
+                                    <option value="public_transport">Transport public</option>
+                                    <option value="car_insurance">Assurance auto</option>
+                                    <option value="car_repair">Réparations véhicule</option>
+                                    <option value="car_maintenance">Entretien véhicule</option>
+                                    <option value="parking">Stationnement</option>
+                                    <option value="road_taxes">Taxes routières</option>
+                                </optgroup>
+
+                                <optgroup label="🍔 Nourriture & Nécessités">
+                                    <option value="groceries">Courses alimentaires</option>
+                                    <option value="water_bottles">Eau potable</option>
+                                    <option value="hygiene">Produits d’hygiène</option>
+                                    <option value="cleaning">Produits de nettoyage</option>
+                                </optgroup>
+
+                                <optgroup label="❤️ Santé">
+                                    <option value="medicines">Médicaments</option>
+                                    <option value="doctor_visit">Consultations médicales</option>
+                                    <option value="medical_tests">Analyses et examens</option>
+                                    <option value="glasses">Lunettes / Lentilles</option>
+                                    <option value="health_insurance">Assurance santé</option>
+                                </optgroup>
+
+                                <optgroup label="🎓 Éducation">
+                                    <option value="school_fees">Frais de scolarité</option>
+                                    <option value="books">Livres</option>
+                                    <option value="supplies">Fournitures scolaires</option>
+                                    <option value="courses">Formations / Cours</option>
+                                    <option value="school_transport">Transport scolaire</option>
+                                </optgroup>
+
+                                <optgroup label="📡 Communication">
+                                    <option value="phone">Téléphone mobile</option>
+                                    <option value="mobile_data">Internet mobile</option>
+                                    <option value="phone_recharge">Recharges</option>
+                                </optgroup>
+
+                                <optgroup label="🧾 Impôts & Taxes">
+                                    <option value="income_tax">Impôt sur le revenu</option>
+                                    <option value="housing_tax">Taxe d’habitation</option>
+                                    <option value="traffic_fines">Amendes</option>
+                                </optgroup>
+
+                                <optgroup label="🛡️ Assurances">
+                                    <option value="house_insurance">Assurance habitation</option>
+                                    <option value="car_insurance_full">Assurance auto</option>
+                                    <option value="life_insurance">Assurance vie</option>
+                                </optgroup>
+
+                                <optgroup label="💳 Dettes & Crédits">
+                                    <option value="credit_payment">Remboursement crédit</option>
+                                    <option value="loan_payment">Remboursement prêt</option>
+                                    <option value="interest">Intérêts bancaires</option>
+                                </optgroup>
+
+                            </select>
+
+
+
+
+
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Montant (DH)</label>
+                            <input type="number" id="expenseAmount" step="0.01" placeholder="0.00" required
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                        </div>
+                        <button type="submit"
+                            class="w-full bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white py-4 rounded-xl font-bold text-sm uppercase tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                            Enregistrer
+                        </button>
+                    </form>
                 </div>
             </div>
         </section>
+
 
 
     </main>
@@ -347,5 +505,15 @@
                 icon.classList.add('fa-bars');
             }
         });
+
+        // Gestion des modals
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
     </script>
 </body>
