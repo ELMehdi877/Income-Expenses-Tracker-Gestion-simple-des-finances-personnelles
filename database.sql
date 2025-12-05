@@ -8,7 +8,7 @@ CREATE TABLE if not exists incomes(
     categorie VARCHAR(30) not null,
     montants DECIMAL(10,2) not null check (montants > 0),
     description VARCHAR(100) not null,
-    date DATETIME DEFAULT (CURRENT_TIMESTAMP)
+    date DATE DEFAULT (CURRENT_DATE)
 );
 
 DROP TABLE IF EXISTS expenses;
@@ -17,7 +17,7 @@ CREATE TABLE if not exists expenses(
     categorie VARCHAR(30) not null,
     montants DECIMAL(10,2) not null check (montants > 0),
     description VARCHAR(100) not null,
-    date DATETIME DEFAULT (CURRENT_TIMESTAMP)
+    date DATE DEFAULT (CURRENT_DATE)
 );
 
 insert into incomes (montants, categorie, description) 

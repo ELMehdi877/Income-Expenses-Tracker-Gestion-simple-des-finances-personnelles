@@ -406,6 +406,11 @@
                             <input type="text" name="incomeDesc" placeholder="Ex: Salaire" required
                                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
                         </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+                            <input type="date" name="incomeDate"
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                        </div>
                         <button type="submit"
                             class="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white py-4 rounded-xl font-bold text-sm uppercase tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                             Enregistrer
@@ -432,7 +437,7 @@
                 
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Categorie</label>
-                            <select id="categorie" name="incomeUpdateCategory"  required
+                            <select id="incomeUpdateCategorie" name="incomeUpdateCategory"  required
                                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
                                 <option value="Salaire">Salaire</option>
                                 <option value="Prime">Prime</option>
@@ -443,15 +448,21 @@
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Montant (DH)</label>
-                            <input id="montants" type="number" name="incomeUpdateAmount" step="0.01" placeholder="0.00" required
+                            <input id="incomeUpdateMontants" type="number" name="incomeUpdateAmount" step="0.01" placeholder="0.00" required
                                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
-                            <input id="description" type="text" name="incomeUpdateDesc" placeholder="Ex: Salaire" required
+                            <input id="incomeUpdateDescription" type="text" name="incomeUpdateDesc" placeholder="Ex: Salaire" required
                                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
                         </div>
-                        <button type="submit"
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+                            <input id="incomeUpdateDate" type="date" name="incomeUpdateDate"
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                        </div>
+                        <input id="incomeUpdateid" type="hidden" name="incomeUpdateid">
+                        <button  type="submit" 
                             class="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white py-4 rounded-xl font-bold text-sm uppercase tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                             Enregistrer
                         </button>
@@ -588,7 +599,7 @@
                         
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Categorie</label>
-                            <select name="expenseCategory" required
+                            <select  name="expenseUpdateCategory" required
                                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
 
                                 <option value="" disabled selected>Choisir une catégorie</option>
@@ -681,6 +692,7 @@
                     </form>
                 </div>
             </div>
+            
         </section>
 
 
@@ -750,9 +762,11 @@
         incomeModifie.forEach(btn => {
             btn.addEventListener('click' , (e) => {
                 e.preventDefault();
-                document.getElementById('categorie').value = btn.dataset.categorie;
-                document.getElementById('montants').value = btn.dataset.montants;
-                document.getElementById('description').value = btn.dataset.description;
+                document.getElementById('incomeUpdateid').value = btn.dataset.id;
+                document.getElementById('incomeUpdateCategorie').value = btn.dataset.categorie;
+                document.getElementById('incomeUpdateMontants').value = btn.dataset.montants;
+                document.getElementById('incomeUpdateDescription').value = btn.dataset.description;
+                document.getElementById('incomeUpdateDate').value = btn.dataset.date;
                 openModal('incomeModalModifie');
             })
         });
