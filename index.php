@@ -269,7 +269,8 @@
                                     <td class='w-[20%] px-4 py-4 text-sm text-gray-600'>{$income['date']}</td>
                                     <td class='w-[20%] px-4 py-4'>
                                     <form action='database.php' method='POST'>
-                                         <button type='submit' name='incomeModifie' value={$income['id']} class='text-blue-600 hover:text-blue-800 mr-3 transition-colors'>
+                                         <button type='button' data-id='{$income['id']}' data-categorie='{$income['categorie']}' data-montants='{$income['montants']}' data-description = '{$income['description']}' data-date = '{$income['date']}' 
+                                         class='incomeModifie text-blue-600 hover:text-blue-800 mr-3 transition-colors'>
                                             <svg class='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                                                 <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'/>
                                             </svg>
@@ -282,12 +283,11 @@
                                         </form>
                                     </td>
                                 </tr>
-                                
-                                ";
+                                        ";
                             }
+
                             ?>
-
-
+                            
                         </tbody>
                     </table>
                 </div>
@@ -369,7 +369,7 @@
                 </div>
             </div>
 
-            <!-- Modal Revenu -->
+            <!-- Modal insert Revenu -->
             <div id="incomeModal"
                 class="hidden flex items-center justify-center px-4 fixed inset-0 z-50 bg-black/50 backdrop-blur-sm overflow-y-auto">
                 <div class="relative bg-white rounded-3xl shadow-2xl max-w-lg w-full p-10 animate-slide-up">
@@ -383,7 +383,7 @@
                             &times;
                         </button>
                     </div>
-                    <form onsubmit="addIncome(event)" action="database.php" method="POST" class="space-y-6">
+                    <form action="database.php" method="POST" class="space-y-6">
                 
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Categorie</label>
@@ -398,7 +398,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Montant (DH)</label>
-                            <input type="number" name="incomeAmount" id="incomeAmount" step="0.01" placeholder="0.00" required
+                            <input type="number" name="incomeAmount" step="0.01" placeholder="0.00" required
                                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
                         </div>
                         <div>
@@ -414,7 +414,52 @@
                 </div>
             </div>
 
-            <!-- Modal Dépense -->
+            <!-- Modal modifie Revenu -->
+            <div id="incomeModalModifie"
+                class="hidden flex items-center justify-center px-4 fixed inset-0 z-50 bg-black/50 backdrop-blur-sm overflow-y-auto">
+                <div class="relative bg-white rounded-3xl shadow-2xl max-w-lg w-full p-10 animate-slide-up">
+                    <div class="flex justify-between items-center mb-8">
+                        <div class="flex items-center gap-3">
+                            <span class="text-3xl">💵</span>
+                            <h3 class="text-2xl font-bold text-gray-800">Ajouter un Revenu</h3>
+                        </div>
+                        <button onclick="closeModal('incomeModalModifie')"
+                            class="text-gray-400 hover:text-red-600 text-3xl transition-colors">
+                            &times;
+                        </button>
+                    </div>
+                    <form action="database.php" method="POST" class="space-y-6">
+                
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Categorie</label>
+                            <select id="categorie" name="incomeUpdateCategory"  required
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                                <option value="Salaire">Salaire</option>
+                                <option value="Prime">Prime</option>
+                                <option value="Bonus">Bonus</option>
+                                <option value="Prime">Prime</option>
+                                <option value="Revenus freelancing">Revenus freelancing</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Montant (DH)</label>
+                            <input id="montants" type="number" name="incomeUpdateAmount" step="0.01" placeholder="0.00" required
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+                            <input id="description" type="text" name="incomeUpdateDesc" placeholder="Ex: Salaire" required
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                        </div>
+                        <button type="submit"
+                            class="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white py-4 rounded-xl font-bold text-sm uppercase tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                            Enregistrer
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Modal insert Dépense -->
             <div id="expenseModal"
                 class="hidden flex items-center justify-center px-4 fixed inset-0 z-50 bg-black/50 backdrop-blur-sm overflow-y-auto">
                 <div class="relative bg-white rounded-3xl shadow-2xl max-w-lg w-full p-10 animate-slide-up">
@@ -428,7 +473,118 @@
                             &times;
                         </button>
                     </div>
-                    <form onsubmit="addExpense(event)" action="database.php" method="POST" class="space-y-6">
+                    <form action="database.php" method="POST" class="space-y-6">
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Categorie</label>
+                            <select name="expenseCategory" required
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+
+                                <option value="" disabled selected>Choisir une catégorie</option>
+
+                                <optgroup label="🏠 Logement & Charges">
+                                    <option value="rent">Loyer</option>
+                                    <option value="mortgage">Crédit immobilier</option>
+                                    <option value="electricity">Électricité</option>
+                                    <option value="water">Eau</option>
+                                    <option value="gas">Gaz</option>
+                                    <option value="internet">Internet</option>
+                                    <option value="heating">Chauffage</option>
+                                    <option value="home_charges">Charges de copropriété</option>
+                                </optgroup>
+
+                                <optgroup label="🚗 Transport">
+                                    <option value="fuel">Carburant</option>
+                                    <option value="public_transport">Transport public</option>
+                                    <option value="car_insurance">Assurance auto</option>
+                                    <option value="car_repair">Réparations véhicule</option>
+                                    <option value="car_maintenance">Entretien véhicule</option>
+                                    <option value="parking">Stationnement</option>
+                                    <option value="road_taxes">Taxes routières</option>
+                                </optgroup>
+
+                                <optgroup label="🍔 Nourriture & Nécessités">
+                                    <option value="groceries">Courses alimentaires</option>
+                                    <option value="water_bottles">Eau potable</option>
+                                    <option value="hygiene">Produits d’hygiène</option>
+                                    <option value="cleaning">Produits de nettoyage</option>
+                                </optgroup>
+
+                                <optgroup label="❤️ Santé">
+                                    <option value="medicines">Médicaments</option>
+                                    <option value="doctor_visit">Consultations médicales</option>
+                                    <option value="medical_tests">Analyses et examens</option>
+                                    <option value="glasses">Lunettes / Lentilles</option>
+                                    <option value="health_insurance">Assurance santé</option>
+                                </optgroup>
+
+                                <optgroup label="🎓 Éducation">
+                                    <option value="school_fees">Frais de scolarité</option>
+                                    <option value="books">Livres</option>
+                                    <option value="supplies">Fournitures scolaires</option>
+                                    <option value="courses">Formations / Cours</option>
+                                    <option value="school_transport">Transport scolaire</option>
+                                </optgroup>
+
+                                <optgroup label="📡 Communication">
+                                    <option value="phone">Téléphone mobile</option>
+                                    <option value="mobile_data">Internet mobile</option>
+                                    <option value="phone_recharge">Recharges</option>
+                                </optgroup>
+
+                                <optgroup label="🧾 Impôts & Taxes">
+                                    <option value="income_tax">Impôt sur le revenu</option>
+                                    <option value="housing_tax">Taxe d’habitation</option>
+                                    <option value="traffic_fines">Amendes</option>
+                                </optgroup>
+
+                                <optgroup label="🛡️ Assurances">
+                                    <option value="house_insurance">Assurance habitation</option>
+                                    <option value="car_insurance_full">Assurance auto</option>
+                                    <option value="life_insurance">Assurance vie</option>
+                                </optgroup>
+
+                                <optgroup label="💳 Dettes & Crédits">
+                                    <option value="credit_payment">Remboursement crédit</option>
+                                    <option value="loan_payment">Remboursement prêt</option>
+                                    <option value="interest">Intérêts bancaires</option>
+                                </optgroup>
+
+                            </select>
+
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Montant (DH)</label>
+                            <input type="number" name="expenseAmount" step="0.01" placeholder="0.00" required
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+                            <input type="text" name="expenseDesc" placeholder="Ex: Courses" required
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                        </div>
+                        <button type="submit"
+                            class="w-full bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white py-4 rounded-xl font-bold text-sm uppercase tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                            Enregistrer
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <!-- Modal modifie Dépense -->
+            <div id="expenseModal"
+                class="hidden flex items-center justify-center px-4 fixed inset-0 z-50 bg-black/50 backdrop-blur-sm overflow-y-auto">
+                <div class="relative bg-white rounded-3xl shadow-2xl max-w-lg w-full p-10 animate-slide-up">
+                    <div class="flex justify-between items-center mb-8">
+                        <div class="flex items-center gap-3">
+                            <span class="text-3xl">💳</span>
+                            <h3 class="text-2xl font-bold text-gray-800">Ajouter une Dépense</h3>
+                        </div>
+                        <button onclick="closeModal('expenseModal')"
+                            class="text-gray-400 hover:text-red-600 text-3xl transition-colors">
+                            &times;
+                        </button>
+                    </div>
+                    <form action="database.php" method="POST" class="space-y-6">
                         
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Categorie</label>
@@ -588,74 +744,17 @@
         function closeModal(modalId) {
             document.getElementById(modalId).classList.add('hidden');
         }
-
-
-        // Mettre à jour le tableau des revenus
-        function updateIncomesTable() {
-            const tbody = document.getElementById('incomesBody');
-            if (incomes.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="4" class="px-4 py-16 text-center">
-                            <div class="text-6xl mb-4 opacity-50">💰</div>
-                            <p class="text-gray-400">Aucun revenu enregistré</p>
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-
-            tbody.innerHTML = incomes.map(income => `
-                <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="px-4 py-4 text-sm text-gray-800">${income.description}</td>
-                    <td class="px-4 py-4">
-                        <span class="inline-block px-3 py-1 rounded-lg text-xs font-semibold bg-green-100 text-green-800">
-                            ${income.amount.toFixed(2)} DH
-                        </span>
-                    </td>
-                    <td class="px-4 py-4 text-sm text-gray-600">${new Date(income.date).toLocaleDateString('fr-FR')}</td>
-                    <td class="px-4 py-4">
-                        <button onclick="deleteIncome(${income.id})" class="bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white px-4 py-2 rounded-lg text-xs font-semibold uppercase tracking-wide transition-all duration-300 hover:-translate-y-0.5 shadow-md hover:shadow-lg">
-                            Supprimer
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-
-        // Mettre à jour le tableau des dépenses
-        function updateExpensesTable() {
-            const tbody = document.getElementById('expensesBody');
-            if (expenses.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="4" class="px-4 py-16 text-center">
-                            <div class="text-6xl mb-4 opacity-50">🛒</div>
-                            <p class="text-gray-400">Aucune dépense enregistrée</p>
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-
-            tbody.innerHTML = expenses.map(expense => `
-                <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="px-4 py-4 text-sm text-gray-800">${expense.description}</td>
-                    <td class="px-4 py-4">
-                        <span class="inline-block px-3 py-1 rounded-lg text-xs font-semibold bg-red-100 text-red-800">
-                            ${expense.amount.toFixed(2)} DH
-                        </span>
-                    </td>
-                    <td class="px-4 py-4 text-sm text-gray-600">${new Date(expense.date).toLocaleDateString('fr-FR')}</td>
-                    <td class="px-4 py-4">
-                        <button onclick="deleteExpense(${expense.id})" class="bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white px-4 py-2 rounded-lg text-xs font-semibold uppercase tracking-wide transition-all duration-300 hover:-translate-y-0.5 shadow-md hover:shadow-lg">
-                            Supprimer
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
+    
+        //Affiche modale de modification incomes
+        let incomeModifie = document.querySelectorAll('.incomeModifie');
+        incomeModifie.forEach(btn => {
+            btn.addEventListener('click' , (e) => {
+                e.preventDefault();
+                document.getElementById('categorie').value = btn.dataset.categorie;
+                document.getElementById('montants').value = btn.dataset.montants;
+                document.getElementById('description').value = btn.dataset.description;
+                openModal('incomeModalModifie');
+            })
+        });
     </script>
 </body>

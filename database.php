@@ -1,14 +1,16 @@
 <?php session_start();
 $incomeCategory = $_POST["incomeCategory"] ?? null;
-$incomeAmount   = $_POST["incomeAmount"] ?? null;
-$incomeDesc     = $_POST["incomeDesc"] ?? null;
+$incomeAmount = $_POST["incomeAmount"] ?? null;
+$incomeDesc = $_POST["incomeDesc"] ?? null;
+$incomeModifie = $_POST['incomeModifie'] ?? null;
+
+#id delete incomes
+$incomeDelete = $_POST['incomeDelete'] ?? null;
 
 $expenseCategory = $_POST["expenseCategory"] ?? null;
 $expenseAmount   = $_POST["expenseAmount"] ?? null;
 $expenseDesc     = $_POST["expenseDesc"] ?? null;
 
-$incomeDelete=$_POST['incomeDelete'] ?? null;
-// $incomeModifie=$_POST['incomeModifie'] ?? null;
 
 $expenseDelete=$_POST['expenseDelete'] ?? null;
 
@@ -22,7 +24,7 @@ $expenseDelete=$_POST['expenseDelete'] ?? null;
 
 $pdo = new PDO("mysql:host=localhost;dbname=smart_wallet","root","");
 
-
+#insert incomes
 if (isset($incomeCategory) && isset($incomeAmount) && isset($incomeDesc)) {
     if (!empty($incomeCategory) && !empty($incomeAmount) && !empty($incomeDesc) ) {
     $_SESSION['incomes'][]=[$incomeCategory,$incomeAmount,$incomeDesc];
@@ -32,6 +34,8 @@ if (isset($incomeCategory) && isset($incomeAmount) && isset($incomeDesc)) {
     
     }
 }
+
+#insert expenses
 if (isset($expenseCategory) && isset($expenseAmount) && isset($expenseDesc)) {
     if (!empty($expenseCategory) && !empty($expenseAmount) && !empty($expenseDesc)) {
     $_SESSION['expenses'][]=[$expenseCategory,$expenseAmount,$expenseDesc];
