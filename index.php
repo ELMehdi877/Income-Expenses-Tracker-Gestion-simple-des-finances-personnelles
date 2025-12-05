@@ -404,7 +404,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
-                            <input type="text" name="incomeDesc" placeholder="" required
+                            <input type="text" name="incomeDesc" placeholder="Description" required
                                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
                         </div>
                         <div>
