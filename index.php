@@ -575,6 +575,11 @@
                             <input type="text" name="expenseDesc" placeholder="Description" required
                                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
                         </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+                            <input type="date" name="expenseDate"
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                        </div>
                         <button type="submit"
                             class="w-full bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white py-4 rounded-xl font-bold text-sm uppercase tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                             Enregistrer

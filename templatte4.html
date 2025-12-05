@@ -470,3 +470,95 @@
     </script>
 </body>
 </html>
+
+
+<?php 
+session_start();
+
+$pdo = new PDO("mysql:host=localhost;dbname=smart_wallet","root","");
+
+// Récupération sécurisée des données POST
+$incomeCategory = $_POST["incomeCategory"] ?? null;
+$incomeAmount = $_POST["incomeAmount"] ?? null;
+$incomeDesc = $_POST["incomeDesc"] ?? null; 
+$incomeDate = $_POST["incomeDate"] ?? null; 
+
+$expenseCategory = $_POST["expenseCategory"] ?? null;
+$expenseAmount = $_POST["expenseAmount"] ?? null;
+$expenseDesc = $_POST["expenseDesc"] ?? null;
+$expenseDate = $_POST["expenseDate"] ?? null;
+
+$incomeUpdateid = $_POST['incomeUpdateid'] ?? null;
+$incomeUpdateCategory = $_POST['incomeUpdateCategory'] ?? null;
+$incomeUpdateAmount = $_POST['incomeUpdateAmount'] ?? null;
+$incomeUpdateDesc = $_POST['incomeUpdateDesc'] ?? null;
+$incomeUpdateDate = $_POST['incomeUpdateDate'] ?? null;
+
+$expenseUpdateid = $_POST['expenseUpdateid'] ?? null;
+$expenseUpdateCategory = $_POST['expenseUpdateCategory'] ?? null;
+$expenseUpdateAmount = $_POST['expenseUpdateAmount'] ?? null;
+$expenseUpdateDesc = $_POST['expenseUpdateDesc'] ?? null;
+$expenseUpdateDate = $_POST['expenseUpdateDate'] ?? null;
+
+$incomeDelete = $_POST['incomeDelete'] ?? null;
+$expenseDelete = $_POST['expenseDelete'] ?? null;
+
+// INSERT INCOME
+if (!empty($incomeCategory) && !empty($incomeAmount) && !empty($incomeDesc)) {
+    if (!empty($incomeDate)) {
+        $stmt = $pdo->prepare("INSERT INTO incomes (categorie, montants, description, date) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$incomeCategory, $incomeAmount, $incomeDesc, $incomeDate]);
+    } else {
+        $stmt = $pdo->prepare("INSERT INTO incomes (categorie, montants, description) VALUES (?, ?, ?)");
+        $stmt->execute([$incomeCategory, $incomeAmount, $incomeDesc]);
+    }
+}
+
+// INSERT EXPENSE
+if (!empty($expenseCategory) && !empty($expenseAmount) && !empty($expenseDesc)) {
+    if (!empty($expenseDate)) {
+        $stmt = $pdo->prepare("INSERT INTO expenses (categorie, montants, description, date) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$expenseCategory, $expenseAmount, $expenseDesc, $expenseDate]);
+    } else {
+        $stmt = $pdo->prepare("INSERT INTO expenses (categorie, montants, description) VALUES (?, ?, ?)");
+        $stmt->execute([$expenseCategory, $expenseAmount, $expenseDesc]);
+    }
+}
+
+// UPDATE INCOME
+if (!empty($incomeUpdateid) && !empty($incomeUpdateCategory) && !empty($incomeUpdateAmount) && !empty($incomeUpdateDesc)) {
+    if (!empty($incomeUpdateDate)) {
+        $stmt = $pdo->prepare("UPDATE incomes SET categorie = ?, montants = ?, description = ?, date = ? WHERE id = ?");
+        $stmt->execute([$incomeUpdateCategory, $incomeUpdateAmount, $incomeUpdateDesc, $incomeUpdateDate, $incomeUpdateid]);
+    } else {
+        $stmt = $pdo->prepare("UPDATE incomes SET categorie = ?, montants = ?, description = ? WHERE id = ?");
+        $stmt->execute([$incomeUpdateCategory, $incomeUpdateAmount, $incomeUpdateDesc, $incomeUpdateid]);
+    }
+}
+
+// UPDATE EXPENSE
+if (!empty($expenseUpdateid) && !empty($expenseUpdateCategory) && !empty($expenseUpdateAmount) && !empty($expenseUpdateDesc)) {
+    if (!empty($expenseUpdateDate)) {
+        $stmt = $pdo->prepare("UPDATE expenses SET categorie = ?, montants = ?, description = ?, date = ? WHERE id = ?");
+        $stmt->execute([$expenseUpdateCategory, $expenseUpdateAmount, $expenseUpdateDesc, $expenseUpdateDate, $expenseUpdateid]);
+    } else {
+        $stmt = $pdo->prepare("UPDATE expenses SET categorie = ?, montants = ?, description = ? WHERE id = ?");
+        $stmt->execute([$expenseUpdateCategory, $expenseUpdateAmount, $expenseUpdateDesc, $expenseUpdateid]);
+    }
+}
+
+// DELETE INCOME
+if (!empty($incomeDelete)) {
+    $stmt = $pdo->prepare("DELETE FROM incomes WHERE id = ?");
+    $stmt->execute([$incomeDelete]);
+}
+
+// DELETE EXPENSE
+if (!empty($expenseDelete)) {
+    $stmt = $pdo->prepare("DELETE FROM expenses WHERE id = ?");
+    $stmt->execute([$expenseDelete]);
+}
+
+header("Location: index.php");
+exit;
+?>
