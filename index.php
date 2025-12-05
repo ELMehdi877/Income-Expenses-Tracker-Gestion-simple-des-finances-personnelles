@@ -348,7 +348,8 @@
                                     <td class='w-[20%] px-4 py-4 text-sm text-gray-600'>{$expense['date']}</td>
                                     <td class='w-[20%] px-4 py-4'>
                                     <form action='database.php' method='POST'>
-                                         <button type='submit' name='incomeModifie' value={$expense['id']} class='text-blue-600 hover:text-blue-800 mr-3 transition-colors'>
+                                         <button type='button'  data-id='{$expense['id']}' data-categorie='{$expense['categorie']}' data-montants='{$expense['montants']}' data-description = '{$expense['description']}' data-date = '{$expense['date']}'
+                                         class='expenseModifie text-blue-600 hover:text-blue-800 mr-3 transition-colors'>
                                             <svg class='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                                                 <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'/>
                                             </svg>
@@ -403,7 +404,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
-                            <input type="text" name="incomeDesc" placeholder="Ex: Salaire" required
+                            <input type="text" name="incomeDesc" placeholder="Description" required
                                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
                         </div>
                         <div>
@@ -453,7 +454,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
-                            <input id="incomeUpdateDescription" type="text" name="incomeUpdateDesc" placeholder="Ex: Salaire" required
+                            <input id="incomeUpdateDescription" type="text" name="incomeUpdateDesc" placeholder="Description" required
                                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
                         </div>
                         <div>
@@ -494,71 +495,71 @@
                                 <option value="" disabled selected>Choisir une catégorie</option>
 
                                 <optgroup label="🏠 Logement & Charges">
-                                    <option value="rent">Loyer</option>
-                                    <option value="mortgage">Crédit immobilier</option>
-                                    <option value="electricity">Électricité</option>
-                                    <option value="water">Eau</option>
-                                    <option value="gas">Gaz</option>
-                                    <option value="internet">Internet</option>
-                                    <option value="heating">Chauffage</option>
-                                    <option value="home_charges">Charges de copropriété</option>
+                                    <option value="Loyer">Loyer</option>
+                                    <option value="Crédit immobilier">Crédit immobilier</option>
+                                    <option value="Électricité">Électricité</option>
+                                    <option value="Eau">Eau</option>
+                                    <option value="Gaz">Gaz</option>
+                                    <option value="Internet">Internet</option>
+                                    <option value="Chauffage">Chauffage</option>
+                                    <option value="Charges de copropriété">Charges de copropriété</option>
                                 </optgroup>
 
                                 <optgroup label="🚗 Transport">
-                                    <option value="fuel">Carburant</option>
-                                    <option value="public_transport">Transport public</option>
-                                    <option value="car_insurance">Assurance auto</option>
-                                    <option value="car_repair">Réparations véhicule</option>
-                                    <option value="car_maintenance">Entretien véhicule</option>
-                                    <option value="parking">Stationnement</option>
-                                    <option value="road_taxes">Taxes routières</option>
+                                    <option value="Carburant">Carburant</option>
+                                    <option value="Transport public">Transport public</option>
+                                    <option value="Assurance auto">Assurance auto</option>
+                                    <option value="Réparations véhicule">Réparations véhicule</option>
+                                    <option value="Entretien véhicule">Entretien véhicule</option>
+                                    <option value="Stationnement">Stationnement</option>
+                                    <option value="Taxes routières">Taxes routières</option>
                                 </optgroup>
 
                                 <optgroup label="🍔 Nourriture & Nécessités">
-                                    <option value="groceries">Courses alimentaires</option>
-                                    <option value="water_bottles">Eau potable</option>
-                                    <option value="hygiene">Produits d’hygiène</option>
-                                    <option value="cleaning">Produits de nettoyage</option>
+                                    <option value="Courses alimentaires">Courses alimentaires</option>
+                                    <option value="Eau potable">Eau potable</option>
+                                    <option value="Produits d’hygiène">Produits d’hygiène</option>
+                                    <option value="Produits de nettoyage">Produits de nettoyage</option>
                                 </optgroup>
 
                                 <optgroup label="❤️ Santé">
-                                    <option value="medicines">Médicaments</option>
-                                    <option value="doctor_visit">Consultations médicales</option>
-                                    <option value="medical_tests">Analyses et examens</option>
-                                    <option value="glasses">Lunettes / Lentilles</option>
-                                    <option value="health_insurance">Assurance santé</option>
+                                    <option value="Médicaments">Médicaments</option>
+                                    <option value="Consultations médicales">Consultations médicales</option>
+                                    <option value="Analyses et examens">Analyses et examens</option>
+                                    <option value="Lunettes / Lentilles">Lunettes / Lentilles</option>
+                                    <option value="Assurance santé">Assurance santé</option>
                                 </optgroup>
 
                                 <optgroup label="🎓 Éducation">
-                                    <option value="school_fees">Frais de scolarité</option>
-                                    <option value="books">Livres</option>
-                                    <option value="supplies">Fournitures scolaires</option>
-                                    <option value="courses">Formations / Cours</option>
-                                    <option value="school_transport">Transport scolaire</option>
+                                    <option value="Frais de scolarité">Frais de scolarité</option>
+                                    <option value="Livres">Livres</option>
+                                    <option value="Fournitures scolaires">Fournitures scolaires</option>
+                                    <option value="Formations / Cours">Formations / Cours</option>
+                                    <option value="Transport scolaire">Transport scolaire</option>
                                 </optgroup>
 
                                 <optgroup label="📡 Communication">
-                                    <option value="phone">Téléphone mobile</option>
-                                    <option value="mobile_data">Internet mobile</option>
-                                    <option value="phone_recharge">Recharges</option>
+                                    <option value="Téléphone mobile">Téléphone mobile</option>
+                                    <option value="Internet mobile">Internet mobile</option>
+                                    <option value="Recharges">Recharges</option>
                                 </optgroup>
 
                                 <optgroup label="🧾 Impôts & Taxes">
-                                    <option value="income_tax">Impôt sur le revenu</option>
-                                    <option value="housing_tax">Taxe d’habitation</option>
-                                    <option value="traffic_fines">Amendes</option>
+                                    <option value="Impôt sur le revenu">Impôt sur le revenu</option>
+                                    <option value="Taxe d’habitation">Taxe d’habitation</option>
+                                    <option value="Amendes">Amendes</option>
                                 </optgroup>
 
                                 <optgroup label="🛡️ Assurances">
-                                    <option value="house_insurance">Assurance habitation</option>
-                                    <option value="car_insurance_full">Assurance auto</option>
-                                    <option value="life_insurance">Assurance vie</option>
+                                    <option value="Assurance habitation">Assurance habitation</option>
+                                    <option value="Assurance auto">Assurance auto</option>
+                                    <option value="Assurance vie">Assurance vie</option>
                                 </optgroup>
 
                                 <optgroup label="💳 Dettes & Crédits">
-                                    <option value="credit_payment">Remboursement crédit</option>
-                                    <option value="loan_payment">Remboursement prêt</option>
-                                    <option value="interest">Intérêts bancaires</option>
+                                    <option value="Remboursement crédit">Remboursement crédit</option>
+                                    <option value="Remboursement prêt">Remboursement prêt</option>
+                                    <option value="Intérêts bancaires">Intérêts bancaires</option>
                                 </optgroup>
 
                             </select>
@@ -571,7 +572,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
-                            <input type="text" name="expenseDesc" placeholder="Ex: Courses" required
+                            <input type="text" name="expenseDesc" placeholder="Description" required
                                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
                         </div>
                         <button type="submit"
@@ -582,7 +583,7 @@
                 </div>
             </div>
             <!-- Modal modifie Dépense -->
-            <div id="expenseModal"
+            <div id="expenseModalModifie"
                 class="hidden flex items-center justify-center px-4 fixed inset-0 z-50 bg-black/50 backdrop-blur-sm overflow-y-auto">
                 <div class="relative bg-white rounded-3xl shadow-2xl max-w-lg w-full p-10 animate-slide-up">
                     <div class="flex justify-between items-center mb-8">
@@ -590,7 +591,7 @@
                             <span class="text-3xl">💳</span>
                             <h3 class="text-2xl font-bold text-gray-800">Ajouter une Dépense</h3>
                         </div>
-                        <button onclick="closeModal('expenseModal')"
+                        <button onclick="closeModal('expenseModalModifie')"
                             class="text-gray-400 hover:text-red-600 text-3xl transition-colors">
                             &times;
                         </button>
@@ -599,77 +600,77 @@
                         
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Categorie</label>
-                            <select  name="expenseUpdateCategory" required
+                            <select id="expenseUpdateCategorie" name="expenseUpdateCategory" required
                                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
 
                                 <option value="" disabled selected>Choisir une catégorie</option>
 
                                 <optgroup label="🏠 Logement & Charges">
-                                    <option value="rent">Loyer</option>
-                                    <option value="mortgage">Crédit immobilier</option>
-                                    <option value="electricity">Électricité</option>
-                                    <option value="water">Eau</option>
-                                    <option value="gas">Gaz</option>
-                                    <option value="internet">Internet</option>
-                                    <option value="heating">Chauffage</option>
-                                    <option value="home_charges">Charges de copropriété</option>
+                                    <option value="Loyer">Loyer</option>
+                                    <option value="Crédit immobilier">Crédit immobilier</option>
+                                    <option value="Électricité">Électricité</option>
+                                    <option value="Eau">Eau</option>
+                                    <option value="Gaz">Gaz</option>
+                                    <option value="Internet">Internet</option>
+                                    <option value="Chauffage">Chauffage</option>
+                                    <option value="Charges de copropriété">Charges de copropriété</option>
                                 </optgroup>
 
                                 <optgroup label="🚗 Transport">
-                                    <option value="fuel">Carburant</option>
-                                    <option value="public_transport">Transport public</option>
-                                    <option value="car_insurance">Assurance auto</option>
-                                    <option value="car_repair">Réparations véhicule</option>
-                                    <option value="car_maintenance">Entretien véhicule</option>
-                                    <option value="parking">Stationnement</option>
-                                    <option value="road_taxes">Taxes routières</option>
+                                    <option value="Carburant">Carburant</option>
+                                    <option value="Transport public">Transport public</option>
+                                    <option value="Assurance auto">Assurance auto</option>
+                                    <option value="Réparations véhicule">Réparations véhicule</option>
+                                    <option value="Entretien véhicule">Entretien véhicule</option>
+                                    <option value="Stationnement">Stationnement</option>
+                                    <option value="Taxes routières">Taxes routières</option>
                                 </optgroup>
 
                                 <optgroup label="🍔 Nourriture & Nécessités">
-                                    <option value="groceries">Courses alimentaires</option>
-                                    <option value="water_bottles">Eau potable</option>
-                                    <option value="hygiene">Produits d’hygiène</option>
-                                    <option value="cleaning">Produits de nettoyage</option>
+                                    <option value="Courses alimentaires">Courses alimentaires</option>
+                                    <option value="Eau potable">Eau potable</option>
+                                    <option value="Produits d’hygiène">Produits d’hygiène</option>
+                                    <option value="Produits de nettoyage">Produits de nettoyage</option>
                                 </optgroup>
 
                                 <optgroup label="❤️ Santé">
-                                    <option value="medicines">Médicaments</option>
-                                    <option value="doctor_visit">Consultations médicales</option>
-                                    <option value="medical_tests">Analyses et examens</option>
-                                    <option value="glasses">Lunettes / Lentilles</option>
-                                    <option value="health_insurance">Assurance santé</option>
+                                    <option value="Médicaments">Médicaments</option>
+                                    <option value="Consultations médicales">Consultations médicales</option>
+                                    <option value="Analyses et examens">Analyses et examens</option>
+                                    <option value="Lunettes / Lentilles">Lunettes / Lentilles</option>
+                                    <option value="Assurance santé">Assurance santé</option>
                                 </optgroup>
 
                                 <optgroup label="🎓 Éducation">
-                                    <option value="school_fees">Frais de scolarité</option>
-                                    <option value="books">Livres</option>
-                                    <option value="supplies">Fournitures scolaires</option>
-                                    <option value="courses">Formations / Cours</option>
-                                    <option value="school_transport">Transport scolaire</option>
+                                    <option value="Frais de scolarité">Frais de scolarité</option>
+                                    <option value="Livres">Livres</option>
+                                    <option value="Fournitures scolaires">Fournitures scolaires</option>
+                                    <option value="Formations / Cours">Formations / Cours</option>
+                                    <option value="Transport scolaire">Transport scolaire</option>
                                 </optgroup>
 
                                 <optgroup label="📡 Communication">
-                                    <option value="phone">Téléphone mobile</option>
-                                    <option value="mobile_data">Internet mobile</option>
-                                    <option value="phone_recharge">Recharges</option>
+                                    <option value="Téléphone mobile">Téléphone mobile</option>
+                                    <option value="Internet mobile">Internet mobile</option>
+                                    <option value="Recharges">Recharges</option>
                                 </optgroup>
 
                                 <optgroup label="🧾 Impôts & Taxes">
-                                    <option value="income_tax">Impôt sur le revenu</option>
-                                    <option value="housing_tax">Taxe d’habitation</option>
-                                    <option value="traffic_fines">Amendes</option>
+                                    <option value="Impôt sur le revenu">Impôt sur le revenu</option>
+                                    <option value="Taxe d’habitation">Taxe d’habitation</option>
+                                    <option value="Amendes">Amendes</option>
                                 </optgroup>
 
                                 <optgroup label="🛡️ Assurances">
-                                    <option value="house_insurance">Assurance habitation</option>
-                                    <option value="car_insurance_full">Assurance auto</option>
-                                    <option value="life_insurance">Assurance vie</option>
+                                    <option value="Assurance habitation">Assurance habitation</option>
+                                    <option value="Assurance auto">Assurance auto</option>
+                                    <option value="Assurance vie">Assurance vie</option>
                                 </optgroup>
 
                                 <optgroup label="💳 Dettes & Crédits">
-                                    <option value="credit_payment">Remboursement crédit</option>
-                                    <option value="loan_payment">Remboursement prêt</option>
-                                    <option value="interest">Intérêts bancaires</option>
+                                    <option value="Remboursement crédit">Remboursement crédit</option>
+                                    <option value="Remboursement prêt">Remboursement prêt</option>
+                                    <option value="Intérêts bancaires">Intérêts bancaires</option>
                                 </optgroup>
 
                             </select>
@@ -677,14 +678,20 @@
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Montant (DH)</label>
-                            <input type="number" name="expenseAmount" step="0.01" placeholder="0.00" required
+                            <input type="number" id="expenseUpdateMontants" name="expenseUpdateAmount" step="0.01" placeholder="0.00" required
                                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
-                            <input type="text" name="expenseDesc" placeholder="Ex: Courses" required
+                            <input type="text" id="expenseUpdateDescription" name="expenseUpdateDesc" placeholder="Description" required
                                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
                         </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+                            <input type="date" id="expenseUpdateDate" name="expenseUpdateDate" required
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                        </div>
+                        <input id="expenseUpdateid" type="hidden" name="expenseUpdateid">
                         <button type="submit"
                             class="w-full bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white py-4 rounded-xl font-bold text-sm uppercase tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                             Enregistrer
@@ -768,6 +775,20 @@
                 document.getElementById('incomeUpdateDescription').value = btn.dataset.description;
                 document.getElementById('incomeUpdateDate').value = btn.dataset.date;
                 openModal('incomeModalModifie');
+            })
+        });
+
+        //Affiche modale de modification expenses
+        let expenseModifie = document.querySelectorAll('.expenseModifie');
+        expenseModifie.forEach(btn => {
+            btn.addEventListener('click' , (e) => {
+                e.preventDefault();
+                document.getElementById('expenseUpdateid').value = btn.dataset.id;
+                document.getElementById('expenseUpdateCategorie').value = btn.dataset.categorie;
+                document.getElementById('expenseUpdateMontants').value = btn.dataset.montants;
+                document.getElementById('expenseUpdateDescription').value = btn.dataset.description;
+                document.getElementById('expenseUpdateDate').value = btn.dataset.date;
+                openModal('expenseModalModifie');
             })
         });
     </script>

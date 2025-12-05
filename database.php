@@ -5,8 +5,11 @@ $incomeAmount = $_POST["incomeAmount"] ?? null;
 $incomeDesc = $_POST["incomeDesc"] ?? null; 
 $incomeDate = $_POST["incomeDate"] ?? null; 
 
-#id delete incomes
-$incomeDelete = $_POST['incomeDelete'] ?? null;
+#insert expenses
+$expenseCategory = $_POST["expenseCategory"] ?? null;
+$expenseAmount = $_POST["expenseAmount"] ?? null;
+$expenseDesc = $_POST["expenseDesc"] ?? null;
+$expenseDate = $_POST["expenseDate"] ?? null;
 
 #modification incomes
 $incomeUpdateid = $_POST['incomeUpdateid'];
@@ -15,12 +18,17 @@ $incomeUpdateAmount = $_POST['incomeUpdateAmount'] ?? null;
 $incomeUpdateDesc = $_POST['incomeUpdateDesc'] ?? null;
 $incomeUpdateDate = $_POST['incomeUpdateDate'] ?? null;
 
-#insert expenses
-$expenseCategory = $_POST["expenseCategory"] ?? null;
-$expenseAmount = $_POST["expenseAmount"] ?? null;
-$expenseDesc = $_POST["expenseDesc"] ?? null;
+#modification expenses
+$expenseUpdateid = $_POST['expenseUpdateid'];
+$expenseUpdateCategory = $_POST['expenseUpdateCategory'] ?? null;
+$expenseUpdateAmount = $_POST['expenseUpdateAmount'] ?? null;
+$expenseUpdateDesc = $_POST['expenseUpdateDesc'] ?? null;
+$expenseUpdateDate = $_POST['expenseUpdateDate'] ?? null;
 
+#id delete incomes
+$incomeDelete = $_POST['incomeDelete'] ?? null;
 
+#id delete expenses
 $expenseDelete=$_POST['expenseDelete'] ?? null;
 
 // if (!isset($_SESSION["icomses"]) ) {
@@ -45,6 +53,15 @@ else if(!empty($incomeCategory) && !empty($incomeAmount) && !empty($incomeDesc))
     $stmt->execute([$incomeCategory,$incomeAmount,$incomeDesc]);
 }
 
+#insert expenses
+if (isset($expenseCategory) && isset($expenseAmount) && isset($expenseDesc)) {
+    if (!empty($expenseCategory) && !empty($expenseAmount) && !empty($expenseDesc)) {
+    $_SESSION['expenses'][]=[$expenseCategory,$expenseAmount,$expenseDesc];
+    print_r($_SESSION['expenses']);
+    $stmt=$pdo->prepare("INSERT INTO expenses (categorie,montants,description) VALUES (?,?,?)");
+    $stmt->execute([$expenseCategory,$expenseAmount,$expenseDesc]);
+    }
+}
 
 #modifie incomes
 if (isset($incomeUpdateCategory) && isset($incomeUpdateAmount) && isset($incomeUpdateDesc) && isset($incomeUpdateDate)) {
@@ -60,19 +77,23 @@ if (isset($incomeUpdateCategory) && isset($incomeUpdateAmount) && isset($incomeU
     $stmt=$pdo->prepare("UPDATE incomes SET categorie = ? , montants = ? , description = ? WHERE id = ? ");
     $stmt->execute([$incomeUpdateCategory,$incomeUpdateAmount,$incomeUpdateDesc,$incomeUpdateid]);
     }
-
 }
 
-#insert expenses
-if (isset($expenseCategory) && isset($expenseAmount) && isset($expenseDesc)) {
-    if (!empty($expenseCategory) && !empty($expenseAmount) && !empty($expenseDesc)) {
-    $_SESSION['expenses'][]=[$expenseCategory,$expenseAmount,$expenseDesc];
+#modifie expenses
+if (isset($expenseUpdateCategory) && isset($expenseUpdateAmount) && isset($expenseUpdateDesc) && isset($expenseUpdateDate)) {
+    if (!empty($expenseUpdateCategory) && !empty($expenseUpdateAmount) && !empty($expenseUpdateDesc) && !empty($expenseUpdateDate)) {
+    $_SESSION['expenses'][]=[$expenseUpdateCategory,$expenseUpdateAmount,$expenseUpdateDesc];
     print_r($_SESSION['expenses']);
-    $stmt=$pdo->prepare("INSERT INTO expenses (categorie,montants,description) VALUES (?,?,?)");
-    $stmt->execute([$expenseCategory,$expenseAmount,$expenseDesc]);
+    $stmt=$pdo->prepare("UPDATE expenses SET categorie = ? , montants = ? , description = ? , date = ? WHERE id = ? ");
+    $stmt->execute([$expenseUpdateCategory,$expenseUpdateAmount,$expenseUpdateDesc,$expenseUpdateDate,$expenseUpdateid]);
+    }
+    else if (!empty($expenseUpdateCategory) && !empty($expenseUpdateAmount) && !empty($expenseUpdateDesc)) {
+    $_SESSION['expenses'][]=[$expenseUpdateCategory,$expenseUpdateAmount,$expenseUpdateDesc];
+    print_r($_SESSION['expenses']);
+    $stmt=$pdo->prepare("UPDATE expenses SET categorie = ? , montants = ? , description = ? WHERE id = ? ");
+    $stmt->execute([$expenseUpdateCategory,$expenseUpdateAmount,$expenseUpdateDesc,$expenseUpdateid]);
     }
 }
-
 #delete income
 if (isset($incomeDelete) && !empty($incomeDelete)) {
     $stmt = $pdo->prepare("DELETE FROM incomes WHERE id = ?");
