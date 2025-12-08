@@ -209,30 +209,7 @@
                 <div class="bg-white w-[100%] col-span-2 row-span-1 rounded-xl shadow-lg p-6 card-hover animate-slide-in"
                     style="animation-delay: 0.2s;">
                     <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm text-slate-600 font-medium mb-1">Solde Actuel</p>
-                            <?php
-                            $stmt1 = $pdo->query("SELECT SUM(montants) AS total_revenu FROM incomes");
-                            $result1 = $stmt1->fetch(PDO::FETCH_ASSOC);
-                            $total_revenu = $result1['total_revenu'];
-
-                            $stmt2 = $pdo->query("SELECT SUM(montants) AS total_depense FROM expenses");
-                            $result2 = $stmt2->fetch(PDO::FETCH_ASSOC);
-                            $total_depense = $result2['total_depense'];
-
-                            $total= ($total_revenu-$total_depense) ?? 0;
-                            $color = ($total >= 0) ? "green" : "red";
-                            echo "<p id='balance' class='text-3xl font-bold text-{$color}-700'>{$total} MAD</p>
-                        </div>
-                        <div
-                            class='w-14 h-14 bg-gradient-to-br from-{$color}-100 to-indigo-100 rounded-full flex items-center justify-center'>
-                            <svg class='w-7 h-7 text-{$color}-600' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2'
-                                d='M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z' />
-                            </svg>
-                        </div>";
-                                ?>
-                    </div>
+                        
                 </div>
             </div>
         </section>
