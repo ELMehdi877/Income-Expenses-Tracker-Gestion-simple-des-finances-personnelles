@@ -120,5 +120,27 @@ if (!empty($expenseDelete)) {
     $stmt->execute([$expenseDelete]);
 }
 
+
+#recuperation de data pour le graphique
+
+// // إنشاء مصفوفة لكل شهر (12 شهر)
+// $incomeData = array_fill(0, 12, 0);   // الإيرادات
+// $expenseData = array_fill(0, 12, 0);  // المصاريف
+
+// // جلب الإيرادات حسب الشهر
+// $stmt = $pdo->query("SELECT MONTH(date) AS mois, SUM(montants) AS total FROM incomes GROUP BY MONTH(date)");
+// $revenus = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// foreach ($revenus as $row) {
+//     $incomeData[$row['mois'] - 1] = (float)$row['total'];
+// }
+
+// // جلب المصاريف حسب الشهر
+// $stmt = $pdo->query("SELECT MONTH(date) AS mois, SUM(montants) AS total FROM expenses GROUP BY MONTH(date)");
+// $depenses = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// foreach ($depenses as $row) {
+//     $expenseData[$row['mois'] - 1] = (float)$row['total'];
+// }
+
+
 header("Location: index.php");
 exit;

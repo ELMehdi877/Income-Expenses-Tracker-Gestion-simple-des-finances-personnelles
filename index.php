@@ -1,4 +1,22 @@
-<?php session_start(); ?>
+<?php session_start(); 
+
+$pdo = new PDO("mysql:host=localhost;dbname=smart_wallet","root","");
+// إضافة هذا الكود هنا
+$incomeData = array_fill(0, 12, 0);
+$expenseData = array_fill(0, 12, 0);
+
+$stmt = $pdo->query("SELECT MONTH(date) AS mois, SUM(montants) AS total FROM incomes WHERE date IS NOT NULL GROUP BY MONTH(date)");
+$revenus = $stmt->fetchAll(PDO::FETCH_ASSOC);
+foreach ($revenus as $row) {
+    $incomeData[$row['mois'] - 1] = (float)$row['total'];
+}
+
+$stmt = $pdo->query("SELECT MONTH(date) AS mois, SUM(montants) AS total FROM expenses WHERE date IS NOT NULL GROUP BY MONTH(date)");
+$depenses = $stmt->fetchAll(PDO::FETCH_ASSOC);
+foreach ($depenses as $row) {
+    $expenseData[$row['mois'] - 1] = (float)$row['total'];
+}
+?>
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -7,6 +25,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Navbar Responsive</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.45.1/apexcharts.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
@@ -155,8 +174,8 @@
     <main class="flex flex-col gap-4">
         <?php $pdo = new PDO("mysql:host=localhost;dbname=smart_wallet","root",""); ?>
         <section class="flex flex-col gap-2 lg:flex-row">
-            <div class="lg:w-[50%] flex items-center justify-center order-2 lg:order-1 w-[100%] h-100 rounded-xl bg-blue-300/50">
-                statistiques
+            <div id="monthlyChart" class="lg:w-[50%] flex items-center justify-center order-2 lg:order-1 w-[100%] h-100 rounded-xl bg-white">
+                <!-- <div id="monthlyChart"></div> -->
             </div>
             <!-- Stats Cards -->
             <div class="lg:w-[50%] w-[100%] order-1 lg:order-2 grid grid-cols-2 grid-rows-2 gap-1">
@@ -268,45 +287,53 @@
                             </tr>
                         </thead>
                         <tbody id="incomesBody" class="divide-y divide-gray-200">
-                            <!-- <tr>
-                                <td colspan="4" class="px-4 py-16 text-center">
-                                    <div class="text-6xl mb-4 opacity-50">💰</div>
-                                    <p class="text-gray-400">Aucun revenu enregistré</p>
-                                </td>
-                            </tr> -->
+                            
                             <?php 
                             $pdo = new PDO("mysql:host=localhost;dbname=smart_wallet","root","");
                             $select = $pdo->prepare("SELECT * FROM incomes");
                             $select->execute();
-                            $results = $select->fetchAll(PDO::FETCH_ASSOC);
-                            foreach($results as $index => $income){
+                            $results = $select->fetchAll(PDO::FETCH_ASSOC) ?? null;
+                            if ($results == null) {
                                 echo "
-                                <tr class='hover:bg-gray-50 transition-colors'>
-                                    <td class='w-[20%] px-4 py-4 text-sm text-gray-800'>{$income['categorie']}</td>
-                                    <td class='w-[20%] px-4 py-4'>
-                                        <span class='inline-block px-3 py-1 rounded-lg text-xs font-semibold bg-green-100 text-green-800'>
-                                            {$income['montants']} DH
-                                        </span>
-                                    </td>
-                                    <td class='w-[20%] px-4 py-4 text-sm text-gray-600'>{$income['description']}</td>
-                                    <td class='w-[20%] px-4 py-4 text-sm text-gray-600'>{$income['date']}</td>
-                                    <td class='w-[20%] px-4 py-4'>
-                                    <form action='database.php' method='POST'>
-                                         <button type='button' data-id='{$income['id']}' data-categorie='{$income['categorie']}' data-montants='{$income['montants']}' data-description = '{$income['description']}' data-date = '{$income['date']}' 
-                                         class='incomeModifie text-blue-600 hover:text-blue-800 mr-3 transition-colors'>
-                                            <svg class='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                                                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'/>
-                                            </svg>
-                                        </button>
-                                        <button type='submit' name='incomeDelete' value={$income['id']} class='text-red-600 hover:text-red-800 transition-colors'>
-                                            <svg class='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                                                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'/>
-                                            </svg>
-                                        </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                        ";
+           
+                                    <tr>
+                                        <td colspan='4' class='px-4 py-16 text-center'>
+                                            <div class='text-6xl mb-4 opacity-50'>💰</div>
+                                            <p class='text-gray-400'>Aucun revenu enregistré</p>
+                                        </td>
+                                    </tr>
+                                    ";
+                            }
+                            else {
+                                foreach($results as $index => $income){
+                                    echo "
+                                    <tr class='hover:bg-gray-50 transition-colors'>
+                                        <td class='w-[20%] px-4 py-4 text-sm text-gray-800'>{$income['categorie']}</td>
+                                        <td class='w-[20%] px-4 py-4'>
+                                            <span class='inline-block px-3 py-1 rounded-lg text-xs font-semibold bg-green-100 text-green-800'>
+                                                {$income['montants']} DH
+                                            </span>
+                                        </td>
+                                        <td class='w-[20%] px-4 py-4 text-sm text-gray-600'>{$income['description']}</td>
+                                        <td class='w-[20%] px-4 py-4 text-sm text-gray-600'>{$income['date']}</td>
+                                        <td class='w-[20%] px-4 py-4'>
+                                        <form action='database.php' method='POST'>
+                                             <button type='button' data-id='{$income['id']}' data-categorie='{$income['categorie']}' data-montants='{$income['montants']}' data-description = '{$income['description']}' data-date = '{$income['date']}' 
+                                             class='incomeModifie text-blue-600 hover:text-blue-800 mr-3 transition-colors'>
+                                                <svg class='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                                                    <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'/>
+                                                </svg>
+                                            </button>
+                                            <button type='submit' name='incomeDelete' value={$income['id']} class='text-red-600 hover:text-red-800 transition-colors'>
+                                                <svg class='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                                                    <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'/>
+                                                </svg>
+                                            </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                            ";
+                                }
                             }
 
                             ?>
@@ -329,7 +356,7 @@
                     </button>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="w-full">
+                    <table class="w-full ">
                         <thead>
                             <tr class="space-x-100 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white">
                                 <th
@@ -347,45 +374,49 @@
                             </tr>
                         </thead>
                         <tbody id="expensesBody" class="divide-y divide-gray-200">
-                            <!-- <tr>
-                                <td colspan="4" class="px-4 py-16 text-center">
-                                    <div class="text-6xl mb-4 opacity-50">🛒</div>
-                                    <p class="text-gray-400">Aucune dépense enregistrée</p>
-                                </td>
-                            </tr> -->
                             <?php 
                             $pdo = new PDO("mysql:host=localhost;dbname=smart_wallet","root","");
                             $select = $pdo->prepare("SELECT * FROM expenses");
                             $select->execute();
-                            $results = $select->fetchAll(PDO::FETCH_ASSOC);
-                            foreach($results as $index => $expense){
-                                echo "
-                                <tr class='hover:bg-gray-50 transition-colors'>
-                                    <td class='w-[20%] px-4 py-4 text-sm text-gray-800'>{$expense['categorie']}</td>
-                                    <td class='w-[20%] px-4 py-4'>
-                                        <span class='inline-block px-3 py-1 rounded-lg text-xs font-semibold bg-green-100 text-green-800'>
-                                            {$expense['montants']} DH
-                                        </span>
-                                    </td>
-                                    <td class='w-[20%] px-4 py-4 text-sm text-gray-600'>{$expense['description']}</td>
-                                    <td class='w-[20%] px-4 py-4 text-sm text-gray-600'>{$expense['date']}</td>
-                                    <td class='w-[20%] px-4 py-4'>
-                                    <form action='database.php' method='POST'>
-                                         <button type='button'  data-id='{$expense['id']}' data-categorie='{$expense['categorie']}' data-montants='{$expense['montants']}' data-description = '{$expense['description']}' data-date = '{$expense['date']}'
-                                         class='expenseModifie text-blue-600 hover:text-blue-800 mr-3 transition-colors'>
-                                            <svg class='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                                                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'/>
-                                            </svg>
-                                        </button>
-                                        <button type='submit' name='expenseDelete' value={$expense['id']} class='text-red-600 hover:text-red-800 transition-colors'>
-                                            <svg class='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                                                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'/>
-                                            </svg>
-                                        </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                ";
+                            $results = $select->fetchAll(PDO::FETCH_ASSOC) ?? null;
+                            if ($results == null) {
+                                echo "<tr>
+                                <td colspan='4' class='px-4 py-16 text-center'>
+                                    <div class='text-6xl mb-4 opacity-50'>🛒</div>
+                                    <p class='text-gray-400'>Aucune dépense enregistrée</p>
+                                </td>
+                            </tr>";
+                            }
+                            else {
+                                foreach($results as $index => $expense){
+                                    echo "
+                                    <tr class='hover:bg-gray-50 transition-colors'>
+                                        <td class='w-[20%] px-4 py-4 text-sm text-gray-800'>{$expense['categorie']}</td>
+                                        <td class='w-[20%] px-4 py-4'>
+                                            <span class='inline-block px-3 py-1 rounded-lg text-xs font-semibold bg-green-100 text-green-800'>
+                                                {$expense['montants']} DH
+                                            </span>
+                                        </td>
+                                        <td class='w-[20%] px-4 py-4 text-sm text-gray-600'>{$expense['description']}</td>
+                                        <td class='w-[20%] px-4 py-4 text-sm text-gray-600'>{$expense['date']}</td>
+                                        <td class='w-[20%] px-4 py-4'>
+                                        <form action='database.php' method='POST'>
+                                             <button type='button'  data-id='{$expense['id']}' data-categorie='{$expense['categorie']}' data-montants='{$expense['montants']}' data-description = '{$expense['description']}' data-date = '{$expense['date']}'
+                                             class='expenseModifie text-blue-600 hover:text-blue-800 mr-3 transition-colors'>
+                                                <svg class='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                                                    <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'/>
+                                                </svg>
+                                            </button>
+                                            <button type='submit' name='expenseDelete' value={$expense['id']} class='text-red-600 hover:text-red-800 transition-colors'>
+                                                <svg class='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                                                    <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'/>
+                                                </svg>
+                                            </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    ";
+                                }
                             }
                             ?>
                         </tbody>
@@ -804,7 +835,7 @@
                 document.getElementById('incomeUpdateDate').value = btn.dataset.date;
                 openModal('incomeModalModifie');
             })
-        });
+        });        
 
         //Affiche modale de modification expenses
         let expenseModifie = document.querySelectorAll('.expenseModifie');
@@ -819,5 +850,40 @@
                 openModal('expenseModalModifie');
             })
         });
+
+        function updateChart() {
+
+            const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
+            // البيانات القادمة من PHP
+            const incomeData = <?php echo json_encode($incomeData); ?>;
+            const expenseData = <?php echo json_encode($expenseData); ?>;
+
+            // إنشاء الرسم البياني
+            const options = {
+                chart: {
+                    type: 'bar',
+                    height: 350,
+                    toolbar: { show: false }
+                },
+                series: [
+                    { name: "revenu", data: incomeData },
+                    { name: "depense", data: expenseData }
+                ],
+                xaxis: { categories: months },
+                plotOptions: { bar: { borderRadius: 8, columnWidth: "45%" } },
+                dataLabels: { enabled: false },
+                colors: ["#10B981", "#EF4444"],
+                legend: { position: "top", fontSize: "14px", fontWeight: 600 },
+                grid: { borderColor: "rgba(0,0,0,0.05)" }
+            };
+
+            const chart = new ApexCharts(document.querySelector("#monthlyChart"), options);
+            chart.render();
+        }
+
+
+
+        // Initialiser le graphique
+        updateChart();
     </script>
 </body>

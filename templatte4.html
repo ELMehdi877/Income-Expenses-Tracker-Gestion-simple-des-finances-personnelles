@@ -1,36 +1,73 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FinanceFlow - Gestion Financière</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <style>
         @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
+
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(50px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        .animate-slide-down { animation: slideDown 0.5s ease; }
-        .animate-fade-in { animation: fadeIn 0.5s ease; }
-        .animate-slide-up { animation: slideUp 0.3s ease; }
+
+        .animate-slide-down {
+            animation: slideDown 0.5s ease;
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        .animate-slide-up {
+            animation: slideUp 0.3s ease;
+        }
     </style>
 </head>
+
 <body class="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 min-h-screen p-5">
     <div class="max-w-7xl mx-auto">
         <!-- Header -->
         <div class="bg-white rounded-3xl shadow-2xl p-8 mb-8 flex justify-between items-center animate-slide-down">
             <div class="flex items-center gap-3">
                 <span class="text-5xl">💰</span>
-                <h1 class="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-amber-500 bg-clip-text text-transparent">
+                <h1
+                    class="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-amber-500 bg-clip-text text-transparent">
                     FinanceFlow
                 </h1>
             </div>
@@ -43,7 +80,8 @@
         <!-- Stats Cards -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <!-- Total Revenus -->
-            <div class="bg-white rounded-3xl shadow-xl p-8 relative overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl animate-fade-in">
+            <div
+                class="bg-white rounded-3xl shadow-xl p-8 relative overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl animate-fade-in">
                 <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-500 to-emerald-400"></div>
                 <div class="text-sm text-gray-600 font-semibold uppercase tracking-wider mb-3">Total Revenus</div>
                 <div id="totalIncome" class="text-5xl font-bold text-gray-800 mb-2">0 DH</div>
@@ -54,7 +92,8 @@
             </div>
 
             <!-- Total Dépenses -->
-            <div class="bg-white rounded-3xl shadow-xl p-8 relative overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl animate-fade-in" style="animation-delay: 0.1s;">
+            <div class="bg-white rounded-3xl shadow-xl p-8 relative overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl animate-fade-in"
+                style="animation-delay: 0.1s;">
                 <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-red-500 to-rose-400"></div>
                 <div class="text-sm text-gray-600 font-semibold uppercase tracking-wider mb-3">Total Dépenses</div>
                 <div id="totalExpense" class="text-5xl font-bold text-gray-800 mb-2">0 DH</div>
@@ -65,7 +104,8 @@
             </div>
 
             <!-- Solde Actuel -->
-            <div class="bg-white rounded-3xl shadow-xl p-8 relative overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl animate-fade-in" style="animation-delay: 0.2s;">
+            <div class="bg-white rounded-3xl shadow-xl p-8 relative overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl animate-fade-in"
+                style="animation-delay: 0.2s;">
                 <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-600 to-amber-500"></div>
                 <div class="text-sm text-gray-600 font-semibold uppercase tracking-wider mb-3">Solde Actuel</div>
                 <div id="balance" class="text-5xl font-bold text-gray-800 mb-2">0 DH</div>
@@ -83,7 +123,7 @@
                 <h2 class="text-2xl font-bold text-gray-800">Vue d'ensemble mensuelle</h2>
             </div>
             <div class="relative h-80">
-                <canvas id="monthlyChart"></canvas>
+                <div id="monthlyChart"></div>
             </div>
         </div>
 
@@ -96,7 +136,8 @@
                         <span class="text-2xl">💵</span>
                         <h2 class="text-2xl font-bold text-gray-800">Revenus</h2>
                     </div>
-                    <button onclick="openModal('incomeModal')" class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-5 py-3 rounded-xl font-semibold text-sm uppercase tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    <button onclick="openModal('incomeModal')"
+                        class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-5 py-3 rounded-xl font-semibold text-sm uppercase tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                         + Ajouter
                     </button>
                 </div>
@@ -104,10 +145,15 @@
                     <table class="w-full">
                         <thead>
                             <tr class="bg-gradient-to-r from-indigo-600 to-indigo-700 text-white">
-                                <th class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider rounded-tl-xl">Description</th>
-                                <th class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider">Montant</th>
+                                <th
+                                    class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider rounded-tl-xl">
+                                    Description</th>
+                                <th class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider">Montant
+                                </th>
                                 <th class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider">Date</th>
-                                <th class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider rounded-tr-xl">Actions</th>
+                                <th
+                                    class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider rounded-tr-xl">
+                                    Actions</th>
                             </tr>
                         </thead>
                         <tbody id="incomesBody" class="divide-y divide-gray-200">
@@ -129,7 +175,8 @@
                         <span class="text-2xl">💳</span>
                         <h2 class="text-2xl font-bold text-gray-800">Dépenses</h2>
                     </div>
-                    <button onclick="openModal('expenseModal')" class="bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white px-5 py-3 rounded-xl font-semibold text-sm uppercase tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    <button onclick="openModal('expenseModal')"
+                        class="bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white px-5 py-3 rounded-xl font-semibold text-sm uppercase tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                         + Ajouter
                     </button>
                 </div>
@@ -137,10 +184,15 @@
                     <table class="w-full">
                         <thead>
                             <tr class="bg-gradient-to-r from-indigo-600 to-indigo-700 text-white">
-                                <th class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider rounded-tl-xl">Description</th>
-                                <th class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider">Montant</th>
+                                <th
+                                    class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider rounded-tl-xl">
+                                    Description</th>
+                                <th class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider">Montant
+                                </th>
                                 <th class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider">Date</th>
-                                <th class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider rounded-tr-xl">Actions</th>
+                                <th
+                                    class="px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider rounded-tr-xl">
+                                    Actions</th>
                             </tr>
                         </thead>
                         <tbody id="expensesBody" class="divide-y divide-gray-200">
@@ -160,31 +212,37 @@
     <!-- Modal Revenu -->
     <div id="incomeModal" class="hidden fixed inset-0 z-50 overflow-y-auto">
         <div class="flex items-center justify-center min-h-screen px-4">
-            <div class="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm transition-opacity" onclick="closeModal('incomeModal')"></div>
+            <div class="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm transition-opacity"
+                onclick="closeModal('incomeModal')"></div>
             <div class="relative bg-white rounded-3xl shadow-2xl max-w-lg w-full p-10 animate-slide-up">
                 <div class="flex justify-between items-center mb-8">
                     <div class="flex items-center gap-3">
                         <span class="text-3xl">💵</span>
                         <h3 class="text-2xl font-bold text-gray-800">Ajouter un Revenu</h3>
                     </div>
-                    <button onclick="closeModal('incomeModal')" class="text-gray-400 hover:text-red-600 text-3xl transition-colors">
+                    <button onclick="closeModal('incomeModal')"
+                        class="text-gray-400 hover:text-red-600 text-3xl transition-colors">
                         &times;
                     </button>
                 </div>
                 <form onsubmit="addIncome(event)" class="space-y-6">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
-                        <input type="text" id="incomeDesc" placeholder="Ex: Salaire" required class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                        <input type="text" id="incomeDesc" placeholder="Ex: Salaire" required
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Montant (DH)</label>
-                        <input type="number" id="incomeAmount" step="0.01" placeholder="0.00" required class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                        <input type="number" id="incomeAmount" step="0.01" placeholder="0.00" required
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Date</label>
-                        <input type="date" id="incomeDate" required class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                        <input type="date" id="incomeDate" required
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
                     </div>
-                    <button type="submit" class="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white py-4 rounded-xl font-bold text-sm uppercase tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    <button type="submit"
+                        class="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white py-4 rounded-xl font-bold text-sm uppercase tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                         Enregistrer
                     </button>
                 </form>
@@ -195,31 +253,37 @@
     <!-- Modal Dépense -->
     <div id="expenseModal" class="hidden fixed inset-0 z-50 overflow-y-auto">
         <div class="flex items-center justify-center min-h-screen px-4">
-            <div class="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm transition-opacity" onclick="closeModal('expenseModal')"></div>
+            <div class="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm transition-opacity"
+                onclick="closeModal('expenseModal')"></div>
             <div class="relative bg-white rounded-3xl shadow-2xl max-w-lg w-full p-10 animate-slide-up">
                 <div class="flex justify-between items-center mb-8">
                     <div class="flex items-center gap-3">
                         <span class="text-3xl">💳</span>
                         <h3 class="text-2xl font-bold text-gray-800">Ajouter une Dépense</h3>
                     </div>
-                    <button onclick="closeModal('expenseModal')" class="text-gray-400 hover:text-red-600 text-3xl transition-colors">
+                    <button onclick="closeModal('expenseModal')"
+                        class="text-gray-400 hover:text-red-600 text-3xl transition-colors">
                         &times;
                     </button>
                 </div>
                 <form onsubmit="addExpense(event)" class="space-y-6">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
-                        <input type="text" id="expenseDesc" placeholder="Ex: Courses" required class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                        <input type="text" id="expenseDesc" placeholder="Ex: Courses" required
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Montant (DH)</label>
-                        <input type="number" id="expenseAmount" step="0.01" placeholder="0.00" required class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                        <input type="number" id="expenseAmount" step="0.01" placeholder="0.00" required
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Date</label>
-                        <input type="date" id="expenseDate" required class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                        <input type="date" id="expenseDate" required
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
                     </div>
-                    <button type="submit" class="w-full bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white py-4 rounded-xl font-bold text-sm uppercase tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    <button type="submit"
+                        class="w-full bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white py-4 rounded-xl font-bold text-sm uppercase tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                         Enregistrer
                     </button>
                 </form>
@@ -392,9 +456,164 @@
         }
 
         // Mettre à jour le graphique
+        // function updateChart() {
+        //     const ctx = document.getElementById('monthlyChart').getContext('2d');
+
+        //     const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
+        //     const incomeData = new Array(12).fill(0);
+        //     const expenseData = new Array(12).fill(0);
+
+        //     incomes.forEach(income => {
+        //         const month = new Date(income.date).getMonth();
+        //         incomeData[month] += income.amount;
+        //     });
+
+        //     expenses.forEach(expense => {
+        //         const month = new Date(expense.date).getMonth();
+        //         expenseData[month] += expense.amount;
+        //     });
+
+        //     if (chart) {
+        //         chart.destroy();
+        //     }
+
+        //     chart = new Chart(ctx, {
+        //         type: 'bar',
+        //         data: {
+        //             labels: months,
+        //             datasets: [{
+        //                 label: 'Revenus',
+        //                 data: incomeData,
+        //                 backgroundColor: 'rgba(16, 185, 129, 0.8)',
+        //                 borderColor: 'rgba(16, 185, 129, 1)',
+        //                 borderWidth: 2,
+        //                 borderRadius: 8
+        //             }, {
+        //                 label: 'Dépenses',
+        //                 data: expenseData,
+        //                 backgroundColor: 'rgba(239, 68, 68, 0.8)',
+        //                 borderColor: 'rgba(239, 68, 68, 1)',
+        //                 borderWidth: 2,
+        //                 borderRadius: 8
+        //             }]
+        //         },
+        //         options: {
+        //             responsive: true,
+        //             maintainAspectRatio: false,
+        //             plugins: {
+        //                 legend: {
+        //                     position: 'top',
+        //                     labels: {
+        //                         font: {
+        //                             size: 14,
+        //                             weight: 'bold'
+        //                         },
+        //                         padding: 15
+        //                     }
+        //                 }
+        //             },
+        //             scales: {
+        //                 y: {
+        //                     beginAtZero: true,
+        //                     grid: {
+        //                         color: 'rgba(0, 0, 0, 0.05)'
+        //                     }
+        //                 },
+        //                 x: {
+        //                     grid: {
+        //                         display: false
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     });
+        // }
+
+
+
+
+        // function updateChart() {
+        //     const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
+
+        //     // Fonction pour générer chaque mois
+        //     const buildMonthlyData = (items) => {
+        //         const result = new Array(12).fill(0);
+        //         items.forEach(item => {
+        //             const month = new Date(item.date).getMonth();
+        //             result[month] += Number(item.amount);
+        //         });
+        //         return result;
+        //     };
+
+        //     const incomeData = buildMonthlyData(incomes);
+        //     const expenseData = buildMonthlyData(expenses);
+
+        //     // Initialisation du chart
+        //     const chartDom = document.getElementById('monthlyChart');
+        //     const chart = echarts.init(chartDom);
+
+        //     const option = {
+        //         tooltip: { trigger: 'axis' },
+        //         legend: {
+        //             data: ['Revenus', 'Dépenses'],
+        //             top: 10
+        //         },
+        //         grid: {
+        //             left: '5%',
+        //             right: '5%',
+        //             bottom: '5%',
+        //             containLabel: true
+        //         },
+        //         xAxis: {
+        //             type: 'category',
+        //             data: months,
+        //             axisTick: { show: false }
+        //         },
+        //         yAxis: {
+        //             type: 'value',
+        //             axisLine: { show: false },
+        //             splitLine: { lineStyle: { color: '#eee' } }
+        //         },
+        //         series: [
+        //             {
+        //                 name: 'Revenus',
+        //                 type: 'bar',
+        //                 data: incomeData,
+        //                 itemStyle: {
+        //                     color: '#10b981'
+        //                 },
+        //                 barWidth: '35%',
+        //                 emphasis: { focus: 'series' }
+        //             },
+        //             {
+        //                 name: 'Dépenses',
+        //                 type: 'bar',
+        //                 data: expenseData,
+        //                 itemStyle: {
+        //                     color: '#ef4444'
+        //                 },
+        //                 barWidth: '35%',
+        //                 emphasis: { focus: 'series' }
+        //             }
+        //         ]
+        //     };
+
+        //     chart.setOption(option);
+
+        //     // Responsive
+        //     window.addEventListener('resize', () => chart.resize());
+        // }
+
+
+        // let chart = null;
+
+
+
+
+
+
         function updateChart() {
-            const ctx = document.getElementById('monthlyChart').getContext('2d');
-            
+        
             const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
             const incomeData = new Array(12).fill(0);
             const expenseData = new Array(12).fill(0);
@@ -413,62 +632,61 @@
                 chart.destroy();
             }
 
-            chart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: months,
-                    datasets: [{
-                        label: 'Revenus',
-                        data: incomeData,
-                        backgroundColor: 'rgba(16, 185, 129, 0.8)',
-                        borderColor: 'rgba(16, 185, 129, 1)',
-                        borderWidth: 2,
-                        borderRadius: 8
-                    }, {
-                        label: 'Dépenses',
-                        data: expenseData,
-                        backgroundColor: 'rgba(239, 68, 68, 0.8)',
-                        borderColor: 'rgba(239, 68, 68, 1)',
-                        borderWidth: 2,
-                        borderRadius: 8
-                    }]
+            let options = {
+                chart: {
+                    type: 'bar',
+                    height: 350,
+                    toolbar: { show: false }
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                font: {
-                                    size: 14,
-                                    weight: 'bold'
-                                },
-                                padding: 15
-                            }
-                        }
+
+                series: [
+                    {
+                        name: "Revenus",
+                        data: incomeData
                     },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.05)'
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            }
-                        }
+                    {
+                        name: "Dépenses",
+                        data: expenseData
                     }
+                ],
+
+                xaxis: {
+                    categories: months
+                },
+
+                plotOptions: {
+                    bar: {
+                        borderRadius: 8,
+                        columnWidth: "45%"
+                    }
+                },
+
+                dataLabels: { enabled: false },
+
+                colors: ["#10B981", "#EF4444"],
+
+                legend: {
+                    position: "top",
+                    fontSize: "14px",
+                    fontWeight: 600
+                },
+
+                grid: {
+                    borderColor: "rgba(0,0,0,0.05)"
                 }
-            });
+            };
+
+            chart = new ApexCharts(document.querySelector("#monthlyChart"), options);
+            chart.render();
         }
+
+
 
         // Initialiser le graphique
         updateChart();
     </script>
 </body>
+
 </html>
 
 
