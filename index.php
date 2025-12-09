@@ -243,7 +243,7 @@ foreach ($depenses as $row) {
                 </div>
             </div>
         </section>
-        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-2">
             <!-- Revenus -->
             <div class="bg-white rounded-3xl shadow-xl p-8 animate-fade-in" style="animation-delay: 0.4s;">
                 <div class="flex justify-between items-center mb-6 pb-4 border-b-2 border-gray-100">
@@ -251,6 +251,11 @@ foreach ($depenses as $row) {
                         <span class="text-2xl">💵</span>
                         <h2 class="text-2xl font-bold text-gray-800">Revenus</h2>
                     </div>
+                    <form action="">
+                        <input type="text" class="border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                        <input type="date" class="border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                        <button type="button" class="border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">recherche</button>
+                    </form>
                     <button onclick="openModal('incomeModal')"
                         class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-5 py-3 rounded-xl font-semibold text-sm uppercase tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                         + Ajouter
