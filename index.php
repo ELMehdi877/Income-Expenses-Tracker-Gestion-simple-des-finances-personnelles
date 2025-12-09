@@ -297,7 +297,7 @@ foreach ($depenses as $row) {
                                 echo "
            
                                     <tr>
-                                        <td ' class='px-4 py-16 text-center'>
+                                        <td colspan='5' class='px-4 py-16 text-center'>
                                             <div class='text-6xl mb-4 opacity-50'>💰</div>
                                             <p class='text-gray-400'>Aucun revenu enregistré</p>
                                         </td>
