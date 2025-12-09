@@ -297,7 +297,7 @@ foreach ($depenses as $row) {
                                 echo "
            
                                     <tr>
-                                        <td colspan='4' class='px-4 py-16 text-center'>
+                                        <td colspan='5' class='px-4 py-16 text-center'>
                                             <div class='text-6xl mb-4 opacity-50'>💰</div>
                                             <p class='text-gray-400'>Aucun revenu enregistré</p>
                                         </td>
@@ -381,7 +381,7 @@ foreach ($depenses as $row) {
                             $results = $select->fetchAll(PDO::FETCH_ASSOC) ?? null;
                             if ($results == null) {
                                 echo "<tr>
-                                <td colspan='4' class='px-4 py-16 text-center'>
+                                <td colspan='5' class='px-4 py-16 text-center'>
                                     <div class='text-6xl mb-4 opacity-50'>🛒</div>
                                     <p class='text-gray-400'>Aucune dépense enregistrée</p>
                                 </td>
