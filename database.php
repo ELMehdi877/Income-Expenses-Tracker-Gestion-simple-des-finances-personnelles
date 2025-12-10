@@ -36,10 +36,44 @@ $expenseDelete=$_POST['expenseDelete'] ?? null;
 // }
 
 // if (!isset($_SESSION["expense"]) ) {
-// $_SESSION["expense"]=[];
-// }
-
+    // $_SESSION["expense"]=[];
+    // }
+    
 $pdo = new PDO("mysql:host=localhost;dbname=smart_wallet","root","");
+# filtrage incomes
+$categorie = $_GET['categorie'] ?? null;
+if(isset($categorie) && !empty($categorie)){
+    if ($categorie == 'ALL') {
+        $stmt = $pdo->query("SELECT * FROM incomes");
+        $stmt -> execute();
+    }
+    else{
+        $stmt = $pdo->prepare("SELECT * FROM incomes WHERE categorie = ?");
+        $stmt -> execute([$categorie]);
+    }
+    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    header('Content-Type: application/json');
+    echo json_encode($data);
+    exit;
+}
+    // ============================================
+// 🔍 FILTRAGE (AJAX uniquement - doit être en premier)
+// ============================================
+// if (isset($_GET['categorie']) && !empty($_GET['categorie'])) {
+//     $incomeCategory_filtre = $_GET['categorie'];
+    
+//     if ($incomeCategory_filtre === 'ALL') {
+//         $stmt = $pdo->query("SELECT * FROM incomes ORDER BY date DESC");
+//     } else {
+//         $stmt = $pdo->prepare("SELECT * FROM incomes WHERE categorie = ? ORDER BY date DESC");
+//         $stmt->execute([$incomeCategory_filtre]);
+//     }
+    
+//     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+//     header('Content-Type: application/json');
+//     echo json_encode($data);
+//     exit; // Important: arrêter ici pour le filtrage
+// }
 
 #insert incomes
 if (!empty($incomeCategory) && !empty($incomeAmount) && !empty($incomeDesc)) {
@@ -121,26 +155,7 @@ if (!empty($expenseDelete)) {
 }
 
 
-#recuperation de data pour le graphique
-
-// // إنشاء مصفوفة لكل شهر (12 شهر)
-// $incomeData = array_fill(0, 12, 0);   // الإيرادات
-// $expenseData = array_fill(0, 12, 0);  // المصاريف
-
-// // جلب الإيرادات حسب الشهر
-// $stmt = $pdo->query("SELECT MONTH(date) AS mois, SUM(montants) AS total FROM incomes GROUP BY MONTH(date)");
-// $revenus = $stmt->fetchAll(PDO::FETCH_ASSOC);
-// foreach ($revenus as $row) {
-//     $incomeData[$row['mois'] - 1] = (float)$row['total'];
-// }
-
-// // جلب المصاريف حسب الشهر
-// $stmt = $pdo->query("SELECT MONTH(date) AS mois, SUM(montants) AS total FROM expenses GROUP BY MONTH(date)");
-// $depenses = $stmt->fetchAll(PDO::FETCH_ASSOC);
-// foreach ($depenses as $row) {
-//     $expenseData[$row['mois'] - 1] = (float)$row['total'];
-// }
-
 
 header("Location: index.php");
 exit;
+

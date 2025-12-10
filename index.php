@@ -16,6 +16,9 @@ $depenses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 foreach ($depenses as $row) {
     $expenseData[$row['mois'] - 1] = (float)$row['total'];
 }
+
+
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -252,17 +255,18 @@ foreach ($depenses as $row) {
                         <h2 class=" text-lg sm:text-xl lg:text-2xl font-bold text-gray-800">Revenus</h2>
                     </div>
                     <div class="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
-                        <form action="" class="flex items-center  gap-2">
-                            <select name="incomeCategory"  required
+                        <form action="database.php" method="GET" class="flex items-center  gap-2">
+                            <select id="incomeCategory_filtre"  required
                             class="flex-1 min-w-[140px] text-xs sm:text-sm font-semibold px-2 sm:px-3 py-2 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all outline-none">
                                 <option value="" disabled selected>Choisir une catégorie</option>
+                                <option value="ALL">ALL</option>
                                 <option value="Salaire">Salaire</option>
                                 <option value="Prime">Prime</option>
                                 <option value="Bonus">Bonus</option>
                                 <option value="Revenus freelancing">Revenus freelancing</option>
                             </select>    
-                            <input type="date" class="flex-1 min-w-[120px] text-xs sm:text-sm font-semibold py-2 px-2 sm:px-3 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all outline-none">
-                            <button type="button" class="bg-yellow-200 hover:bg-yellow-300 py-2 px-3 rounded-lg sm:rounded-full text-xs transition-all"><i class="fa fa-search " aria-hidden="true"></i></button>
+                            <input type="date" name="income_filtre" class="flex-1 min-w-[120px] text-xs sm:text-sm font-semibold py-2 px-2 sm:px-3 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all outline-none">
+                            <button type="submit" class="bg-yellow-200 hover:bg-yellow-300 py-2 px-3 rounded-lg sm:rounded-full text-xs transition-all"><i class="fa fa-search " aria-hidden="true"></i></button>
                         </form>
                         <button onclick="openModal('incomeModal')"
                         class="w-full sm:w-auto bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-4 sm:px-5 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-xs sm:text-sm uppercase tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5">
@@ -295,6 +299,7 @@ foreach ($depenses as $row) {
                             $select = $pdo->prepare("SELECT * FROM incomes");
                             $select->execute();
                             $results = $select->fetchAll(PDO::FETCH_ASSOC);
+                            
                             if (empty($results)) {
                                 echo "
            
@@ -354,10 +359,11 @@ foreach ($depenses as $row) {
                     </div>
                     <div class="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
                         <form action="" class="flex gap-2">
-                            <select name="expenseCategory" required
+                            <select name="expenseCategory_filtre" required
                                 class="flex-1 min-w-[140px] text-xs sm:text-sm font-semibold px-2 sm:px-3 py-2 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all outline-none">
 
                                 <option value="" disabled selected>Choisir une catégorie</option>
+                                <option value="ALL">ALL</option>
 
                                 <optgroup label="🏠 Logement & Charges">
                                     <option value="Loyer">Loyer</option>
@@ -427,7 +433,7 @@ foreach ($depenses as $row) {
                                     <option value="Intérêts bancaires">Intérêts bancaires</option>
                                 </optgroup>
                             </select>   
-                            <input type="date" class="flex-1 min-w-[120px] text-xs sm:text-sm font-semibold py-2 px-2 sm:px-3 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all outline-none">
+                            <input type="date" name="expense_filtre" class="flex-1 min-w-[120px] text-xs sm:text-sm font-semibold py-2 px-2 sm:px-3 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all outline-none">
                             <button type="button" class="bg-yellow-200 hover:bg-yellow-300 py-2 px-3 rounded-lg sm:rounded-full text-xs transition-all">
                                 <i class="fa fa-search" aria-hidden="true"></i>
                             </button>                    
@@ -908,32 +914,37 @@ foreach ($depenses as $row) {
         }
     
         //Affiche modale de modification incomes
-        let incomeModifie = document.querySelectorAll('.incomeModifie');
-        incomeModifie.forEach(btn => {
-            btn.addEventListener('click' , (e) => {
-                e.preventDefault();
-                document.getElementById('incomeUpdateid').value = btn.dataset.id;
-                document.getElementById('incomeUpdateCategorie').value = btn.dataset.categorie;
-                document.getElementById('incomeUpdateMontants').value = btn.dataset.montants;
-                document.getElementById('incomeUpdateDescription').value = btn.dataset.description;
-                document.getElementById('incomeUpdateDate').value = btn.dataset.date;
-                openModal('incomeModalModifie');
-            })
-        });        
-
+        function modifie_incomes(){
+            let incomeModifie = document.querySelectorAll('.incomeModifie');
+            incomeModifie.forEach(btn => {
+                btn.addEventListener('click' , (e) => {
+                    e.preventDefault();
+                    document.getElementById('incomeUpdateid').value = btn.dataset.id;
+                    document.getElementById('incomeUpdateCategorie').value = btn.dataset.categorie;
+                    document.getElementById('incomeUpdateMontants').value = btn.dataset.montants;
+                    document.getElementById('incomeUpdateDescription').value = btn.dataset.description;
+                    document.getElementById('incomeUpdateDate').value = btn.dataset.date;
+                    openModal('incomeModalModifie');
+                })
+            }); 
+        } ;      
+        modifie_incomes();
         //Affiche modale de modification expenses
-        let expenseModifie = document.querySelectorAll('.expenseModifie');
-        expenseModifie.forEach(btn => {
-            btn.addEventListener('click' , (e) => {
-                e.preventDefault();
-                document.getElementById('expenseUpdateid').value = btn.dataset.id;
-                document.getElementById('expenseUpdateCategorie').value = btn.dataset.categorie;
-                document.getElementById('expenseUpdateMontants').value = btn.dataset.montants;
-                document.getElementById('expenseUpdateDescription').value = btn.dataset.description;
-                document.getElementById('expenseUpdateDate').value = btn.dataset.date;
-                openModal('expenseModalModifie');
-            })
-        });
+        function modifie_expenses(){
+            let expenseModifie = document.querySelectorAll('.expenseModifie');
+            expenseModifie.forEach(btn => {
+                btn.addEventListener('click' , (e) => {
+                    e.preventDefault();
+                    document.getElementById('expenseUpdateid').value = btn.dataset.id;
+                    document.getElementById('expenseUpdateCategorie').value = btn.dataset.categorie;
+                    document.getElementById('expenseUpdateMontants').value = btn.dataset.montants;
+                    document.getElementById('expenseUpdateDescription').value = btn.dataset.description;
+                    document.getElementById('expenseUpdateDate').value = btn.dataset.date;
+                    openModal('expenseModalModifie');
+                })
+            });
+        }
+        modifie_expenses();
 
         function updateChart() {
 
@@ -1013,5 +1024,71 @@ foreach ($depenses as $row) {
 
         // Initialiser le graphique
         updateChart();
+
+        //filtrage
+       document.getElementById("incomeCategory_filtre").addEventListener('change' , function(e) {
+        e.preventDefault();
+            let c = this.value;
+
+            // نطلبو البيانات من filter.php
+            fetch("database.php?categorie=" + c)
+                .then(res => res.json())
+                .then(data => {
+                    let txt = "";
+
+                    if (data.length === 0) {
+                        txt = `
+                            <tr>
+                                <td colspan='5' class='px-4 py-16 text-center'>
+                                    <div class='text-6xl mb-4 opacity-50'>💰</div>
+                                    <p class='text-gray-400'>Aucun revenu trouvé pour cette catégorie</p>
+                                </td>
+                            </tr>
+                        `;
+                    }
+                    else {
+                    
+                    
+                        data.forEach(row => {
+                            txt += `
+                            <tr class='hover:bg-gray-50 transition-colors'>
+                                <td class='w-[20%] px-4 py-4 text-sm text-gray-800'>${row.categorie}</td>
+                                <td class='w-[20%] px-4 py-4'>
+                                    <span class='inline-block px-3 py-1 rounded-lg text-xs font-semibold bg-green-100 text-green-800'>
+                                        ${row.montants} DH
+                                    </span>
+                                </td>
+                                <td class='w-[20%] px-4 py-4 text-sm text-gray-600'>${row.description}</td>
+                                <td class='w-[20%] px-4 py-4 text-sm text-gray-600'>${row.date}</td>
+                                <td class='w-[20%] px-4 py-4'>
+                                    <form action='database.php' method='POST'>
+                                        <button type='button'
+                                            data-id='${row.id}'
+                                            data-categorie='${row.categorie}'
+                                            data-montants='${row.montants}'
+                                            data-description='${row.description}'
+                                            data-date='${row.date}'
+                                            class='incomeModifie text-blue-600 hover:text-blue-800 mr-3 transition-colors'>
+                                            <svg class='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                                                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2'
+                                                    d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'/>
+                                            </svg>
+                                        </button>
+                                        <button type='submit' name='incomeDelete' value='${row.id}' class='text-red-600 hover:text-red-800 transition-colors'>
+                                            <svg class='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                                                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2'
+                                                    d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'/>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            `;
+                        });
+                    }
+                    document.getElementById("incomesBody").innerHTML = txt;
+                    modifie_incomes();
+                });
+            });
     </script>
 </body>
