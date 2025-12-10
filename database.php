@@ -41,15 +41,30 @@ $expenseDelete=$_POST['expenseDelete'] ?? null;
     
 $pdo = new PDO("mysql:host=localhost;dbname=smart_wallet","root","");
 # filtrage incomes
-$categorie = $_GET['categorie'] ?? null;
-if(isset($categorie) && !empty($categorie)){
-    if ($categorie == 'ALL') {
+$categorie_income = $_GET['categorie_income'] ?? null;
+if(isset($categorie_income) && !empty($categorie_income)){
+    if ($categorie_income == 'ALL') {
         $stmt = $pdo->query("SELECT * FROM incomes");
-        $stmt -> execute();
     }
     else{
         $stmt = $pdo->prepare("SELECT * FROM incomes WHERE categorie = ?");
-        $stmt -> execute([$categorie]);
+        $stmt -> execute([$categorie_income]);
+    }
+    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    header('Content-Type: application/json');
+    echo json_encode($data);
+    exit;
+}
+
+# filtrage expense
+$categorie_expense = $_GET['categorie_expense'] ?? null;
+if(isset($categorie_expense) && !empty($categorie_expense)){
+    if ($categorie_expense == 'ALL') {
+        $stmt = $pdo->query("SELECT * FROM expenses");
+    }
+    else{
+        $stmt = $pdo->prepare("SELECT * FROM expenses WHERE categorie = ?");
+        $stmt -> execute([$categorie_expense]);
     }
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
     header('Content-Type: application/json');
