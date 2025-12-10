@@ -251,10 +251,17 @@ foreach ($depenses as $row) {
                         <span class="text-2xl">💵</span>
                         <h2 class="text-2xl font-bold text-gray-800">Revenus</h2>
                     </div>
-                    <form action="">
-                        <input type="text" class="border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
-                        <input type="date" class="border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
-                        <button type="button" class="border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">recherche</button>
+                    <form action="" class="flex gap-2">
+                    <select name="incomeCategory"  required
+                                class="text-[12px] px-1 py-1 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                                <option value="" disabled selected>Choisir une catégorie</option>
+                                <option value="Salaire">Salaire</option>
+                                <option value="Prime">Prime</option>
+                                <option value="Bonus">Bonus</option>
+                                <option value="Revenus freelancing">Revenus freelancing</option>
+                            </select>    
+                    <input type="date" class="text-[12px] border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                        <button type="button"><i class="fa fa-search " aria-hidden="true"></i></button>
                     </form>
                     <button onclick="openModal('incomeModal')"
                         class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-5 py-3 rounded-xl font-semibold text-sm uppercase tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
@@ -343,6 +350,83 @@ foreach ($depenses as $row) {
                         <span class="text-2xl">💳</span>
                         <h2 class="text-2xl font-bold text-gray-800">Dépenses</h2>
                     </div>
+                    <form action="" class="flex gap-2">
+                        <select name="expenseCategory" required
+                            class="text-[12px] px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+
+                            <option value="" disabled selected>Choisir une catégorie</option>
+
+                            <optgroup label="🏠 Logement & Charges">
+                                <option value="Loyer">Loyer</option>
+                                <option value="Crédit immobilier">Crédit immobilier</option>
+                                <option value="Électricité">Électricité</option>
+                                <option value="Eau">Eau</option>
+                                <option value="Gaz">Gaz</option>
+                                <option value="Internet">Internet</option>
+                                <option value="Chauffage">Chauffage</option>
+                                <option value="Charges de copropriété">Charges de copropriété</option>
+                            </optgroup>
+
+                            <optgroup label="🚗 Transport">
+                                <option value="Carburant">Carburant</option>
+                                <option value="Transport public">Transport public</option>
+                                <option value="Assurance auto">Assurance auto</option>
+                                <option value="Réparations véhicule">Réparations véhicule</option>
+                                <option value="Entretien véhicule">Entretien véhicule</option>
+                                <option value="Stationnement">Stationnement</option>
+                                <option value="Taxes routières">Taxes routières</option>
+                            </optgroup>
+
+                            <optgroup label="🍔 Nourriture & Nécessités">
+                                <option value="Courses alimentaires">Courses alimentaires</option>
+                                <option value="Eau potable">Eau potable</option>
+                                <option value="Produits d’hygiène">Produits d’hygiène</option>
+                                <option value="Produits de nettoyage">Produits de nettoyage</option>
+                            </optgroup>
+
+                            <optgroup label="❤️ Santé">
+                                <option value="Médicaments">Médicaments</option>
+                                <option value="Consultations médicales">Consultations médicales</option>
+                                <option value="Analyses et examens">Analyses et examens</option>
+                                <option value="Lunettes / Lentilles">Lunettes / Lentilles</option>
+                                <option value="Assurance santé">Assurance santé</option>
+                            </optgroup>
+
+                            <optgroup label="🎓 Éducation">
+                                <option value="Frais de scolarité">Frais de scolarité</option>
+                                <option value="Livres">Livres</option>
+                                <option value="Fournitures scolaires">Fournitures scolaires</option>
+                                <option value="Formations / Cours">Formations / Cours</option>
+                                <option value="Transport scolaire">Transport scolaire</option>
+                            </optgroup>
+
+                            <optgroup label="📡 Communication">
+                                <option value="Téléphone mobile">Téléphone mobile</option>
+                                <option value="Internet mobile">Internet mobile</option>
+                                <option value="Recharges">Recharges</option>
+                            </optgroup>
+
+                            <optgroup label="🧾 Impôts & Taxes">
+                                <option value="Impôt sur le revenu">Impôt sur le revenu</option>
+                                <option value="Taxe d’habitation">Taxe d’habitation</option>
+                                <option value="Amendes">Amendes</option>
+                            </optgroup>
+
+                            <optgroup label="🛡️ Assurances">
+                                <option value="Assurance habitation">Assurance habitation</option>
+                                <option value="Assurance auto">Assurance auto</option>
+                                <option value="Assurance vie">Assurance vie</option>
+                            </optgroup>
+
+                            <optgroup label="💳 Dettes & Crédits">
+                                <option value="Remboursement crédit">Remboursement crédit</option>
+                                <option value="Remboursement prêt">Remboursement prêt</option>
+                                <option value="Intérêts bancaires">Intérêts bancaires</option>
+                            </optgroup>
+                        </select>   
+                    <input type="date" class="text-[12px] border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                        <button type="button"><i class="fa fa-search " aria-hidden="true"></i></button>
+                    </form>
                     <button onclick="openModal('expenseModal')"
                         class="bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white px-5 py-3 rounded-xl font-semibold text-sm uppercase tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                         + Ajouter
@@ -437,6 +521,7 @@ foreach ($depenses as $row) {
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Categorie</label>
                             <select name="incomeCategory"  required
                                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                                <option value="" disabled selected>Choisir une catégorie</option>
                                 <option value="Salaire">Salaire</option>
                                 <option value="Prime">Prime</option>
                                 <option value="Bonus">Bonus</option>
@@ -486,6 +571,7 @@ foreach ($depenses as $row) {
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Categorie</label>
                             <select id="incomeUpdateCategorie" name="incomeUpdateCategory"  required
                                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                                <option value="" disabled selected>Choisir une catégorie</option>
                                 <option value="Salaire">Salaire</option>
                                 <option value="Prime">Prime</option>
                                 <option value="Bonus">Bonus</option>
