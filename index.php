@@ -254,8 +254,8 @@ foreach ($depenses as $row) {
                         <span class="text-xl sm:text-2xl">💵</span>
                         <h2 class=" text-lg sm:text-xl lg:text-2xl font-bold text-gray-800">Revenus</h2>
                     </div>
-                    <div class="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
-                        <form action="database.php" method="GET" class="flex items-center  gap-2">
+                    <div class="flex flex-col lg:flex-row gap-3 lg:items-center lg:justify-center ">
+                        <div class="flex items-center w-full gap-2">
                             <select id="incomeCategory_filtre"  required
                             class="flex-1 min-w-[140px] text-xs sm:text-sm font-semibold px-2 sm:px-3 py-2 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all outline-none">
                                 <option value="" disabled selected>Choisir une catégorie</option>
@@ -266,8 +266,7 @@ foreach ($depenses as $row) {
                                 <option value="Revenus freelancing">Revenus freelancing</option>
                             </select>    
                             <input type="date" id="incomeDate_filtre" class="flex-1 min-w-[120px] text-xs sm:text-sm font-semibold py-2 px-2 sm:px-3 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all outline-none">
-                            <button type="submit" class="bg-yellow-200 hover:bg-yellow-300 py-2 px-3 rounded-lg sm:rounded-full text-xs transition-all"><i class="fa fa-search " aria-hidden="true"></i></button>
-                        </form>
+                        </div>
                         <button onclick="openModal('incomeModal')"
                         class="w-full sm:w-auto bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-4 sm:px-5 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-xs sm:text-sm uppercase tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5">
                             +Ajouter
@@ -357,8 +356,8 @@ foreach ($depenses as $row) {
                         <span class="text-2xl">💳</span>
                         <h2 class="Text-lg sm:text-xl lg:text-2xl font-bold text-gray-800">Dépenses</h2>
                     </div>
-                    <div class="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
-                        <form action="" class="flex gap-2">
+                    <div class="flex flex-col lg:flex-row gap-3 lg:items-center lg:justify-center">
+                        <div class="flex items-center w-full gap-2">
                             <select id="expenseCategory_filtre" required
                                 class="flex-1 min-w-[140px] text-xs sm:text-sm font-semibold px-2 sm:px-3 py-2 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all outline-none">
 
@@ -433,14 +432,11 @@ foreach ($depenses as $row) {
                                     <option value="Intérêts bancaires">Intérêts bancaires</option>
                                 </optgroup>
                             </select>   
-                            <input type="date" name="expense_filtre" class="flex-1 min-w-[120px] text-xs sm:text-sm font-semibold py-2 px-2 sm:px-3 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all outline-none">
-                            <button type="button" class="bg-yellow-200 hover:bg-yellow-300 py-2 px-3 rounded-lg sm:rounded-full text-xs transition-all">
-                                <i class="fa fa-search" aria-hidden="true"></i>
-                            </button>                    
-                        </form>
+                            <input type="date" id="expenseDate_filtre" class="flex-1 min-w-[120px] text-xs sm:text-sm font-semibold py-2 px-2 sm:px-3 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all outline-none">                    
+                        </div>
                         <button onclick="openModal('expenseModal')"
                             class="w-full sm:w-auto bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white px-4 sm:px-5 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-xs sm:text-sm uppercase tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5">
-                            + Ajouter
+                            +Ajouter
                         </button>
                     </div>
                 </div>
@@ -1159,9 +1155,76 @@ foreach ($depenses as $row) {
     
 
 
-        //filtrage expenses
-        document.getElementById("expenseCategory_filtre").addEventListener('change' , function(e) {
-        e.preventDefault();
+        //filtrage expenses categorie
+        document.getElementById("expenseDate_filtre").addEventListener('change' , function(e) {
+            e.preventDefault();
+            let c = this.value;
+
+            // نطلبو البيانات من filter.php
+            fetch("database.php?date_expense=" + c)
+                .then(res => res.json())
+                .then(data => {
+                    let txt = "";
+
+                    if (data.length === 0) {
+                        txt = `
+                            <tr>
+                                <td colspan='5' class='px-4 py-16 text-center'>
+                                    <div class='text-6xl mb-4 opacity-50'>🛒</div>
+                                    <p class='text-gray-400'>Aucun revenu trouvé pour cette catégorie</p>
+                                </td>
+                            </tr>
+                        `;
+                    }
+                    else {
+                    
+                    
+                        data.forEach(row => {
+                            txt += `
+                                <tr class='hover:bg-gray-50 transition-colors'>
+                                    <td class='w-[20%] px-4 py-4 text-sm text-gray-800'>${row.categorie}</td>
+                                    <td class='w-[20%] px-4 py-4'>
+                                        <span class='inline-block px-3 py-1 rounded-lg text-xs font-semibold bg-red-100 text-red-800'>
+                                            ${row.montants} DH
+                                        </span>
+                                    </td>
+                                    <td class='w-[20%] px-4 py-4 text-sm text-gray-600'>${row.description}</td>
+                                    <td class='w-[20%] px-4 py-4 text-sm text-gray-600'>${row.date}</td>
+                                    <td class='w-[20%] px-4 py-4'>
+                                        <form action='database.php' method='POST'>
+                                            <button type='button' 
+                                                data-id='${row.id}' 
+                                                data-categorie='${row.categorie}' 
+                                                data-montants='${row.montants}' 
+                                                data-description='${row.description}' 
+                                                data-date='${row.date}'
+                                                class='expenseModifie text-blue-600 hover:text-blue-800 mr-3 transition-colors'>
+                                                <svg class='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                                                    <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' 
+                                                        d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'/>
+                                                </svg>
+                                            </button>
+                                            <button type='submit' name='expenseDelete' value='${row.id}' class='text-red-600 hover:text-red-800 transition-colors'>
+                                                <svg class='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                                                    <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' 
+                                                        d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'/>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            `;
+                        });
+
+                    }
+                    document.getElementById("expensesBody").innerHTML = txt;
+                    modifie_expenses();
+                });
+            });
+
+                //filtrage incomes par date
+                 document.getElementById("expenseCategory_filtre").addEventListener('change' , function(e) {
+            e.preventDefault();
             let c = this.value;
 
             // نطلبو البيانات من filter.php
@@ -1225,8 +1288,5 @@ foreach ($depenses as $row) {
                     modifie_expenses();
                 });
             });
-  
-  
-  
-  </script>
+     </script>
 </body>

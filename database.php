@@ -72,7 +72,7 @@ if (isset($date_income) ) {
     exit;
 }
 
-# filtrage expense
+# filtrage expense categorie
 $categorie_expense = $_GET['categorie_expense'] ?? null;
 if(isset($categorie_expense) && !empty($categorie_expense)){
     if ($categorie_expense == 'ALL') {
@@ -83,6 +83,22 @@ if(isset($categorie_expense) && !empty($categorie_expense)){
         $stmt -> execute([$categorie_expense]);
     }
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    header('Content-Type: application/json');
+    echo json_encode($data);
+    exit;
+}
+
+# filtrage expense par date
+$date_expense = $_GET['date_expense'] ?? null;
+if (isset($date_expense) ) {
+   if (!empty($date_expense)) {
+    $stmt = $pdo->prepare("SELECT * FROM expenses WHERE DATE(date) = ?");
+    $stmt->execute([$date_expense]);
+    } 
+    else {
+        $stmt = $pdo->query("SELECT * FROM expenses");
+    }
+     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
     header('Content-Type: application/json');
     echo json_encode($data);
     exit;
