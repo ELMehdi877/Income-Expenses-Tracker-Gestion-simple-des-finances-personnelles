@@ -253,6 +253,12 @@ foreach ($depenses as $row) {
                     <div class="flex items-center gap-2 sm:gap-3">
                         <span class="text-xl sm:text-2xl">💵</span>
                         <h2 class=" text-lg sm:text-xl lg:text-2xl font-bold text-gray-800">Revenus</h2>
+                        <form action="database.php" method="GET" class="ml-30 lg:ml-101">
+                            <input name="incomes_pdf"
+                            class="px-4 py-2 bg-yellow-400 text-white rounded-lg shadow hover:bg-yellow-500"
+                            value="Export PDF" type="submit" name="incomes_pdf"
+                            >
+                        </form>
                     </div>
                     <div class="flex flex-col lg:flex-row gap-3 lg:items-center lg:justify-center ">
                         <div class="flex items-center w-full gap-2">
@@ -267,6 +273,7 @@ foreach ($depenses as $row) {
                             </select>    
                             <input type="date" id="incomeDate_filtre" class="flex-1 min-w-[120px] text-xs sm:text-sm font-semibold py-2 px-2 sm:px-3 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all outline-none">
                         </div>
+                        
                         <button onclick="openModal('incomeModal')"
                         class="w-full sm:w-auto bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-4 sm:px-5 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-xs sm:text-sm uppercase tracking-wide shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5">
                             +Ajouter
@@ -355,6 +362,12 @@ foreach ($depenses as $row) {
                     <div class="flex items-center gap-2 sm:gap-3">
                         <span class="text-2xl">💳</span>
                         <h2 class="Text-lg sm:text-xl lg:text-2xl font-bold text-gray-800">Dépenses</h2>
+                        <form action="database.php" method="GET" class="ml-30 lg:ml-98">
+                            <input name="expenses_pdf"
+                            class="px-4 py-2 bg-yellow-400 text-white rounded-lg shadow hover:bg-yellow-500"
+                            value="Export PDF" type="submit" 
+                            >
+                        </form>
                     </div>
                     <div class="flex flex-col lg:flex-row gap-3 lg:items-center lg:justify-center">
                         <div class="flex items-center w-full gap-2">
@@ -544,7 +557,7 @@ foreach ($depenses as $row) {
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
-                            <input type="text" name="incomeDesc" placeholder="Description" required
+                            <input type="text" name="incomeDesc" placeholder="Description (<=35 caractaire)" required
                                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
                         </div>
                         <div>
@@ -594,7 +607,7 @@ foreach ($depenses as $row) {
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
-                            <input id="incomeUpdateDescription" type="text" name="incomeUpdateDesc" placeholder="Description" required
+                            <input id="incomeUpdateDescription" type="text" name="incomeUpdateDesc" placeholder="Description (<=35 caractaire)" required
                                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
                         </div>
                         <div>
@@ -712,7 +725,7 @@ foreach ($depenses as $row) {
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
-                            <input type="text" name="expenseDesc" placeholder="Description" required
+                            <input type="text" name="expenseDesc" placeholder="Description (<=35 caractaire)" required
                                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
                         </div>
                         <div>
@@ -828,7 +841,7 @@ foreach ($depenses as $row) {
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
-                            <input type="text" id="expenseUpdateDescription" name="expenseUpdateDesc" placeholder="Description" required
+                            <input type="text" id="expenseUpdateDescription" name="expenseUpdateDesc" placeholder="Description (<=35 caractaire)" required
                                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
                         </div>
                         <div>

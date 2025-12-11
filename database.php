@@ -40,6 +40,73 @@ $expenseDelete=$_POST['expenseDelete'] ?? null;
     // }
     
 $pdo = new PDO("mysql:host=localhost;dbname=smart_wallet","root","");
+
+
+// ✅ حط كود PDF هنا في الأول
+if (isset($_GET['incomes_pdf'])) {  // ← شرط جديد
+    require("fpdf.php");
+    
+    $stmt = $pdo->query("SELECT categorie, montants, description, date FROM incomes");
+    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    $pdf = new FPDF();
+    $pdf->AddPage();
+    $pdf->SetFont("Arial", "B", 16);
+    $pdf->Cell(0, 10, "Incomes List", 0, 1, "C");
+    $pdf->Ln(5);
+    
+    $pdf->SetFont("Arial", "B", 12);
+    $pdf->Cell(40, 10, "Categorie", 1);
+    $pdf->Cell(30, 10, "Montant", 1);
+    $pdf->Cell(80, 10, "Description", 1);
+    $pdf->Cell(40, 10, "Date", 1);
+    $pdf->Ln();
+    
+    $pdf->SetFont("Arial", "", 12);
+    foreach ($data as $row) {
+        $pdf->Cell(40, 10, utf8_decode($row["categorie"]), 1);
+        $pdf->Cell(30, 10, $row["montants"], 1);
+        $pdf->Cell(80, 10, utf8_decode($row["description"]), 1);
+        $pdf->Cell(40, 10, $row["date"], 1);
+        $pdf->Ln();
+    }
+    
+    $pdf->Output();
+    exit;  // ✅ نوقفو هنا
+}
+
+if (isset($_GET['expenses_pdf'])) {  // ← شرط جديد
+    require("fpdf.php");
+    
+    $stmt = $pdo->query("SELECT categorie, montants, description, date FROM expenses");
+    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    $pdf = new FPDF();
+    $pdf->AddPage();
+    $pdf->SetFont("Arial", "B", 16);
+    $pdf->Cell(0, 10, "Expenses List", 0, 1, "C");
+    $pdf->Ln(5);
+    
+    $pdf->SetFont("Arial", "B", 12);
+    $pdf->Cell(40, 10, "Categorie", 1);
+    $pdf->Cell(30, 10, "Montant", 1);
+    $pdf->Cell(80, 10, "Description", 1);
+    $pdf->Cell(40, 10, "Date", 1);
+    $pdf->Ln();
+    
+    $pdf->SetFont("Arial", "", 12);
+    foreach ($data as $row) {
+        $pdf->Cell(40, 10, utf8_decode($row["categorie"]), 1);
+        $pdf->Cell(30, 10, $row["montants"], 1);
+        $pdf->Cell(80, 10, utf8_decode($row["description"]), 1);
+        $pdf->Cell(40, 10, $row["date"], 1);
+        $pdf->Ln();
+    }
+    
+    $pdf->Output();
+    exit;  // ✅ نوقفو هنا
+}
+
 # filtrage incomes par categorie
 $categorie_income = $_GET['categorie_income'] ?? null;
 if(isset($categorie_income) && !empty($categorie_income)){
@@ -71,6 +138,9 @@ if (isset($date_income) ) {
     echo json_encode($data);
     exit;
 }
+
+
+
 
 # filtrage expense categorie
 $categorie_expense = $_GET['categorie_expense'] ?? null;

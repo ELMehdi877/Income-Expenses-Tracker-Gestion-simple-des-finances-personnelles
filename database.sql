@@ -7,7 +7,7 @@ CREATE TABLE if not exists incomes(
     id int PRIMARY key AUTO_INCREMENT,
     categorie VARCHAR(30) not null,
     montants DECIMAL(10,2) not null check (montants > 0),
-    description VARCHAR(100) not null,
+    description VARCHAR(35) not null,
     date DATE DEFAULT (CURRENT_DATE)
 );
 
@@ -16,7 +16,7 @@ CREATE TABLE if not exists expenses(
     id int PRIMARY key AUTO_INCREMENT,
     categorie VARCHAR(30) not null,
     montants DECIMAL(10,2) not null check (montants > 0),
-    description VARCHAR(100) not null,
+    description VARCHAR(35) not null,
     date DATE DEFAULT (CURRENT_DATE)
 );
 
