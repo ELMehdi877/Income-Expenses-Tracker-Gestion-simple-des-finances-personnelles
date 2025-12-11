@@ -71,7 +71,8 @@ if (isset($_GET['incomes_pdf'])) {  // ← شرط جديد
         $pdf->Ln();
     }
     
-    $pdf->Output();
+    // $pdf->Output();
+    $pdf->Output('D', 'incomes_list.pdf');
     exit;  // ✅ نوقفو هنا
 }
 
@@ -103,7 +104,8 @@ if (isset($_GET['expenses_pdf'])) {  // ← شرط جديد
         $pdf->Ln();
     }
     
-    $pdf->Output();
+    // $pdf->Output();
+    $pdf->Output('D', 'expenses_list.pdf');
     exit;  // ✅ نوقفو هنا
 }
 
