@@ -1,7 +1,7 @@
 <?php session_start(); 
 
 $pdo = new PDO("mysql:host=localhost;dbname=smart_wallet","root","");
-// إضافة هذا الكود هنا
+
 $incomeData = array_fill(0, 12, 0);
 $expenseData = array_fill(0, 12, 0);
 
@@ -139,8 +139,12 @@ foreach ($depenses as $row) {
                         </button>
 
                         <!-- Image Profil -->
-                        <img src="image/mehdi.png" alt="Profile"
-                            class="w-12 rounded-full border-2 border-gray-300 hover:border-blue-500 transition cursor-pointer">
+                        <form action="login.php">
+                            <button type="submit">
+                                <img  src="image/mehdi.png" alt="Profile"
+                                class="w-12 rounded-full border-2 border-gray-300 hover:border-blue-500 transition cursor-pointer">
+                            </button>
+                        </form>
 
                         <!-- Bouton Menu Mobile -->
                         <button id="mobile-menu-button"

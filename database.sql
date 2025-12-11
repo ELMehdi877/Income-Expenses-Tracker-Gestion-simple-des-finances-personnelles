@@ -20,6 +20,13 @@ CREATE TABLE if not exists expenses(
     date DATE DEFAULT (CURRENT_DATE)
 );
 
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL
+);
+
+
 insert into incomes (montants, categorie, description) 
 values (55.5, "t9diya", "khizo btata"),
 (55.5, "t9diya", "khizo btata"),
