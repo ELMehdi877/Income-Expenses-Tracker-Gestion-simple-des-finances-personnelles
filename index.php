@@ -265,7 +265,7 @@ foreach ($depenses as $row) {
                                 <option value="Bonus">Bonus</option>
                                 <option value="Revenus freelancing">Revenus freelancing</option>
                             </select>    
-                            <input type="date" name="income_filtre" class="flex-1 min-w-[120px] text-xs sm:text-sm font-semibold py-2 px-2 sm:px-3 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all outline-none">
+                            <input type="date" id="incomeDate_filtre" class="flex-1 min-w-[120px] text-xs sm:text-sm font-semibold py-2 px-2 sm:px-3 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all outline-none">
                             <button type="submit" class="bg-yellow-200 hover:bg-yellow-300 py-2 px-3 rounded-lg sm:rounded-full text-xs transition-all"><i class="fa fa-search " aria-hidden="true"></i></button>
                         </form>
                         <button onclick="openModal('incomeModal')"
@@ -1025,9 +1025,8 @@ foreach ($depenses as $row) {
         // Initialiser le graphique
         updateChart();
 
-        //filtrage incomes
-       document.getElementById("incomeCategory_filtre").addEventListener('change' , function(e) {
-        e.preventDefault();
+        //filtrage incomes par categorie
+        document.getElementById("incomeCategory_filtre").addEventListener('change' , function(e) {e.preventDefault();
             let c = this.value;
 
             // نطلبو البيانات من filter.php
@@ -1091,8 +1090,77 @@ foreach ($depenses as $row) {
                 });
             });
   
-            //filtrage expense
-       document.getElementById("expenseCategory_filtre").addEventListener('change' , function(e) {
+        //filtrage incomes par date
+        document.getElementById("incomeDate_filtre").addEventListener('change' , function(e) {
+            e.preventDefault();
+            let c = this.value;
+
+            // نطلبو البيانات من filter.php
+            fetch("database.php?date_income=" + c)
+                .then(res => res.json())
+                .then(data => {
+                    let txt = "";
+
+                    if (data.length === 0) {
+                        txt = `
+                            <tr>
+                                <td colspan='5' class='px-4 py-16 text-center'>
+                                    <div class='text-6xl mb-4 opacity-50'>💰</div>
+                                    <p class='text-gray-400'>Aucun revenu trouvé pour cette date</p>
+                                </td>
+                            </tr>
+                        `;
+                    }
+                    else {
+                    
+                    
+                        data.forEach(row => {
+                            txt += `
+                            <tr class='hover:bg-gray-50 transition-colors'>
+                                <td class='w-[20%] px-4 py-4 text-sm text-gray-800'>${row.categorie}</td>
+                                <td class='w-[20%] px-4 py-4'>
+                                    <span class='inline-block px-3 py-1 rounded-lg text-xs font-semibold bg-green-100 text-green-800'>
+                                        ${row.montants} DH
+                                    </span>
+                                </td>
+                                <td class='w-[20%] px-4 py-4 text-sm text-gray-600'>${row.description}</td>
+                                <td class='w-[20%] px-4 py-4 text-sm text-gray-600'>${row.date}</td>
+                                <td class='w-[20%] px-4 py-4'>
+                                    <form action='database.php' method='POST'>
+                                        <button type='button'
+                                            data-id='${row.id}'
+                                            data-categorie='${row.categorie}'
+                                            data-montants='${row.montants}'
+                                            data-description='${row.description}'
+                                            data-date='${row.date}'
+                                            class='incomeModifie text-blue-600 hover:text-blue-800 mr-3 transition-colors'>
+                                            <svg class='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                                                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2'
+                                                    d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'/>
+                                            </svg>
+                                        </button>
+                                        <button type='submit' name='incomeDelete' value='${row.id}' class='text-red-600 hover:text-red-800 transition-colors'>
+                                            <svg class='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                                                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2'
+                                                    d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'/>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            `;
+                        });
+                    }
+                    document.getElementById("incomesBody").innerHTML = txt;
+                    modifie_incomes();
+                });
+            });
+  
+    
+
+
+        //filtrage expenses
+        document.getElementById("expenseCategory_filtre").addEventListener('change' , function(e) {
         e.preventDefault();
             let c = this.value;
 
