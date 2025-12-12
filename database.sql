@@ -35,6 +35,6 @@ values (55.5, "t9diya", "khizo btata"),
 select * from incomes;
 select * from expenses;
 delete from incomes;
-
+select * from users;
 show tables;
 CREATE DATABASE IF NOT EXISTS finance_manager;
